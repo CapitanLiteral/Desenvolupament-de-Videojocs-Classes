@@ -28,6 +28,9 @@
     <ClCompile Include="j1Scene.cpp">
       <Filter>Desenvolupament  ========\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="j1FilesManager.cpp">
+      <Filter>Desenvolupament  ========\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1Window.h">
@@ -71,6 +74,9 @@
     </ClInclude>
     <ClInclude Include="j1Scene.h">
       <Filter>Desenvolupament  ========\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="j1FilesManager.h">
+      <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

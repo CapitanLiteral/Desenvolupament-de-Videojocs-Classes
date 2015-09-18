@@ -12,6 +12,7 @@ class j1Textures;
 class j1Audio;
 class j1FileSystem;
 class j1Scene;
+class j1FilesManager;
 
 class j1App
 {
@@ -70,6 +71,7 @@ public:
 	j1Textures*			tex;
 	j1Audio*			audio;
 	j1Scene*			scene;
+	j1FilesManager*		filesM;
 
 private:
 
