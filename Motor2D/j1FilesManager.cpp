@@ -43,9 +43,8 @@ bool j1FilesManager::CleanUp()
 	return true;
 }
 
-bool j1FilesManager::LoadFile(const char* file)
+SDL_RWops* j1FilesManager::LoadFile(const char* file)
 {
-	bool ret = true;
-
-	return ret;
+	textures = PHYSFS_openRead(game_test / textures / test.png);
+	return textures;
 }
