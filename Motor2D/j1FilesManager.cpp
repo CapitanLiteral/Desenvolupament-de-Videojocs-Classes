@@ -22,7 +22,7 @@ bool j1FilesManager::Awake()
 	if (PHYSFS_init(NULL) == 0)
 	{
 		LOG("Could not create the FilesManager! PHYFS_ERROR: %s\n", PHYSFS_getLastError());
-		ret=false;
+		ret = false;
 	}
 
 	return ret;

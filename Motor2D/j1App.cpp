@@ -28,12 +28,10 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	// Reverse order of CleanUp
 	AddModule(input);
 	AddModule(win);
-
-	AddModule(filesM);
-
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(scene);
+	AddModule(filesM);
 
 	// render last to swap buffer
 	AddModule(render);
