@@ -33,21 +33,21 @@ bool j1Window::Awake()
 	{
 		//Create window
 		Uint32 flags = SDL_WINDOW_SHOWN;
-		width = SCREEN_WIDTH;
-		height = SCREEN_HEIGHT;
-		scale = SCALE;
+		width = App->config.child("window").child("screen_width").;
+		height = App->config.child("window").child("screen_height").value;
+		scale = App->config.child("window").child("scale").value;
 
-		if(R_FULLSCREEN == true)
+		if(App->config.child("window").child("fullscreen").value == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
 
-		if(R_BORDERLESS == true)
+		if (App->config.child("window").child("borderless").value == true)
 		{
 			flags |= SDL_WINDOW_BORDERLESS;
 		}
 
-		if(R_RESIZABLE == true)
+		if (App->config.child("window").child("resizable").value == true)
 		{
 			flags |= SDL_WINDOW_RESIZABLE;
 		}
@@ -68,7 +68,7 @@ bool j1Window::Awake()
 		{
 			//Get window surface
 			screen_surface = SDL_GetWindowSurface(window);
-			SetTitle(App->config.child("name").child_value());
+			SetTitle(App->config.child("window").child("name").child_value());
 		}
 	}
 

@@ -1,5 +1,25 @@
 <!-- Config file for the game -->
 
 <config>
-	<name>My super awesome game with XML</name>
+	<app>	
+	
+	</app>
+	
+	<window>
+		<name>My super awesome game with XML</name>
+		<fullscreen>false</fullscreen>
+		<borderless>false</borderless>
+		<resizable>false</resizable>
+		<fullscreen_windowed>false</fullscreen_windowed>
+		<screen_width>640</screen_width>
+		<screen_height>480</screen_height>
+		<scale>1</scale>
+	</window>
+
+	<fs>
+		<organitzation>My awasome studio</organitzation>
+		<appname>My cool game</appname>
+	</fs>
+	
+	
 </config>

@@ -85,6 +85,9 @@ bool j1App::Awake()
 	while(item != NULL && ret == true)
 	{
 		// TODO 1: Every awake to receive a xml node with their section of the config file if exists
+
+
+
 		ret = item->data->Awake();
 		item = item->next;
 	}

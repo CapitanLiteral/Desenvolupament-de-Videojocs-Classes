@@ -62,7 +62,7 @@ inline const char* const PATH(const char* folder, const char* file)
 // Conf
 
 // TODO 2: move all those defines to data from the config.xml file
-#define R_FULLSCREEN false
+/*#define R_FULLSCREEN false
 #define R_BORDERLESS false
 #define R_RESIZABLE false
 #define R_FULLSCR_WINDOWED false
@@ -71,6 +71,6 @@ inline const char* const PATH(const char* folder, const char* file)
 //#define WINDOW_TITLE "My Game"
 #define SCALE 1
 #define ORGANIZATION "My Awesome Studio"
-#define APPNAME "My cool game"
+#define APPNAME "My cool game"*/
 
 #endif
