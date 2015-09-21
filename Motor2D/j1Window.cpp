@@ -33,26 +33,26 @@ bool j1Window::Awake()
 	{
 		//Create window
 		Uint32 flags = SDL_WINDOW_SHOWN;
-		width = App->config.child("window").child("screen_width").;
-		height = App->config.child("window").child("screen_height").value;
-		scale = App->config.child("window").child("scale").value;
+		width = App->config.child("window").child("screen_width").attribute("screen_width").as_int();
+		height = App->config.child("window").child("screen_height").attribute("screen_height").as_int();
+		scale = App->config.child("window").child("scale").child_value().as_int(); /*.attribute("scale")*/
 
-		if(App->config.child("window").child("fullscreen").value == true)
+		if(App->config.child("window").child("fullscreen").attribute("fullscreen").as_bool() == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
 
-		if (App->config.child("window").child("borderless").value == true)
+		if (App->config.child("window").child("borderless").attribute("borderless").as_bool() == true)
 		{
 			flags |= SDL_WINDOW_BORDERLESS;
 		}
 
-		if (App->config.child("window").child("resizable").value == true)
+		if (App->config.child("window").child("resizable").attribute("resizable").as_bool() == true)
 		{
 			flags |= SDL_WINDOW_RESIZABLE;
 		}
 
-		if(R_FULLSCR_WINDOWED == true)
+		if (App->config.child("window").child("fullscreen_windowed").attribute("fullscreen_windowed").as_bool() == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
