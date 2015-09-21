@@ -1,6 +1,7 @@
 #include "p2Defs.h"
 #include "p2Log.h"
 #include "j1App.h"
+#include "j1FileSystem.h"
 #include "j1Audio.h"
 
 #include "SDL/include/SDL.h"
@@ -27,7 +28,8 @@ bool j1Audio::Awake()
 	if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
 	{
 		LOG("SDL_INIT_AUDIO could not initialize! SDL_Error: %s\n", SDL_GetError());
-		ret = false;
+		active = false;
+		ret = true;
 	}
 
 	// load support for the JPG and PNG image formats
@@ -37,14 +39,16 @@ bool j1Audio::Awake()
 	if((init & flags) != flags)
 	{
 		LOG("Could not initialize Mixer lib. Mix_Init: %s", Mix_GetError());
-		ret = false;
+		active = false;
+		ret = true;
 	}
 
 	//Initialize SDL_mixer
 	if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 	{
 		LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-		ret = false;
+		active = false;
+		ret = true;
 	}
 
 	return ret;
@@ -53,6 +57,9 @@ bool j1Audio::Awake()
 // Called before quitting
 bool j1Audio::CleanUp()
 {
+	if(!active)
+		return true;
+
 	LOG("Freeing sound FX, closing Mixer and Audio subsystem");
 
 	if(music != NULL)
@@ -69,6 +76,7 @@ bool j1Audio::CleanUp()
 	Mix_CloseAudio();
 	Mix_Quit();
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+
 	return true;
 }
 
@@ -76,6 +84,9 @@ bool j1Audio::CleanUp()
 bool j1Audio::PlayMusic(const char* path, float fade_time)
 {
 	bool ret = true;
+
+	if(!active)
+		return false;
 
 	if(music != NULL)
 	{
@@ -92,7 +103,7 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 		Mix_FreeMusic(music);
 	}
 
-	music = Mix_LoadMUS(path);
+	music = Mix_LoadMUS_RW(App->fs->Load(path), 1);
 
 	if(music == NULL)
 	{
@@ -103,7 +114,7 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 	{
 		if(fade_time > 0.0f)
 		{
-			if(Mix_FadeInMusic(music, -1, fade_time * 1000.0f) < 0)
+			if(Mix_FadeInMusic(music, -1, (int) (fade_time * 1000.0f)) < 0)
 			{
 				LOG("Cannot fade in music %s. Mix_GetError(): %s", path, Mix_GetError());
 				ret = false;
@@ -127,7 +138,11 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 unsigned int j1Audio::LoadFx(const char* path)
 {
 	unsigned int ret = 0;
-	Mix_Chunk* chunk = Mix_LoadWAV(path);
+
+	if(!active)
+		return 0;
+
+	Mix_Chunk* chunk = Mix_LoadWAV_RW(App->fs->Load(path), 1);
 
 	if(chunk == NULL)
 	{
@@ -146,6 +161,9 @@ unsigned int j1Audio::LoadFx(const char* path)
 bool j1Audio::PlayFx(unsigned int id, int repeat)
 {
 	bool ret = false;
+
+	if(!active)
+		return false;
 
 	if(id > 0 && id <= fx.count())
 	{

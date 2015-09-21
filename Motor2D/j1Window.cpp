@@ -32,7 +32,6 @@ bool j1Window::Awake()
 	else
 	{
 		//Create window
-		title.create(WINDOW_TITLE);
 		Uint32 flags = SDL_WINDOW_SHOWN;
 		width = SCREEN_WIDTH;
 		height = SCREEN_HEIGHT;
@@ -69,6 +68,7 @@ bool j1Window::Awake()
 		{
 			//Get window surface
 			screen_surface = SDL_GetWindowSurface(window);
+			SetTitle(App->config.child("name").child_value());
 		}
 	}
 

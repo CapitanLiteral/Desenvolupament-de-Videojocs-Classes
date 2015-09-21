@@ -3,6 +3,7 @@
 
 #include "p2List.h"
 #include "j1Module.h"
+#include "PugiXml\src\pugixml.hpp"
 
 // Modules
 class j1Window;
@@ -12,7 +13,6 @@ class j1Textures;
 class j1Audio;
 class j1FileSystem;
 class j1Scene;
-class j1FilesManager;
 
 class j1App
 {
@@ -61,8 +61,10 @@ private:
 
 public:
 
-	uint		frames;
-	float		dt;
+	uint				frames;
+	float				dt;
+	pugi::xml_document	config_file;
+	pugi::xml_node		config;
 
 	// Modules
 	j1Window*			win;
@@ -71,7 +73,7 @@ public:
 	j1Textures*			tex;
 	j1Audio*			audio;
 	j1Scene*			scene;
-	j1FilesManager*		filesM;
+	j1FileSystem*		fs;
 
 private:
 

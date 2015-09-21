@@ -7,8 +7,7 @@
 #include "j1Textures.h"
 #include "j1Audio.h"
 #include "j1Scene.h"
-#include "j1FilesManager.h"
-
+#include "j1FileSystem.h"
 #include "j1App.h"
 
 // Constructor
@@ -22,16 +21,16 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new j1Textures();
 	audio = new j1Audio();
 	scene = new j1Scene();
-	filesM = new j1FilesManager();
+	fs = new j1FileSystem("data.zip");
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
+	AddModule(fs);
 	AddModule(input);
 	AddModule(win);
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(scene);
-	AddModule(filesM);
 
 	// render last to swap buffer
 	AddModule(render);
@@ -50,6 +49,8 @@ j1App::~j1App()
 	}
 
 	modules.clear();
+
+	config_file.reset();
 }
 
 void j1App::AddModule(j1Module* module)
@@ -63,11 +64,27 @@ bool j1App::Awake()
 {
 	bool ret = true;
 
+	// --- load config file ---
+	char* buf;
+	int size = App->fs->Load("config.xml", &buf);
+	pugi::xml_parse_result result = config_file.load_buffer(buf, size);
+	RELEASE(buf);
+
+	if(result == NULL)
+	{
+		LOG("Could not load map xml file config.xml. pugi error: %s", result.description());
+		ret = false;
+	}
+	else
+		config = config_file.child("config");
+	// ---
+
 	p2List_item<j1Module*>* item;
 	item = modules.start;
 
 	while(item != NULL && ret == true)
 	{
+		// TODO 1: Every awake to receive a xml node with their section of the config file if exists
 		ret = item->data->Awake();
 		item = item->next;
 	}

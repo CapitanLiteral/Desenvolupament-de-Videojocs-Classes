@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -27,7 +27,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -75,7 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="j1FilesManager.cpp" />
+    <ClCompile Include="j1FileSystem.cpp" />
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1App.cpp" />
     <ClCompile Include="j1Audio.cpp" />
@@ -85,9 +85,10 @@
     <ClCompile Include="j1Render.cpp" />
     <ClCompile Include="j1Textures.cpp" />
     <ClCompile Include="j1Window.cpp" />
+    <ClCompile Include="PugiXml\src\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="j1FilesManager.h" />
+    <ClInclude Include="j1FileSystem.h" />
     <ClInclude Include="j1Scene.h" />
     <ClInclude Include="p2DynArray.h" />
     <ClInclude Include="j1Audio.h" />
@@ -102,6 +103,8 @@
     <ClInclude Include="j1Textures.h" />
     <ClInclude Include="j1Window.h" />
     <ClInclude Include="p2SString.h" />
+    <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
+    <ClInclude Include="PugiXml\src\pugixml.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
