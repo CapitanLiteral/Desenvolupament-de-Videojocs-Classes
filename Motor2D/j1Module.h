@@ -28,6 +28,11 @@ public:
 		return true;
 	}
 
+	virtual bool Awake(/*s'ha d'enviar el node fill que correspongui*/)
+	{
+		return true;
+	}
+
 	// Called before the first frame
 	virtual bool Start()
 	{

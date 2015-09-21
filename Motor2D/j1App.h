@@ -63,8 +63,6 @@ public:
 
 	uint				frames;
 	float				dt;
-	pugi::xml_document	config_file;
-	pugi::xml_node		config;
 
 	// Modules
 	j1Window*			win;
@@ -80,6 +78,9 @@ private:
 	p2List<j1Module*>	modules;
 	int					argc;
 	char**				args;
+
+	pugi::xml_document	config_file;
+	pugi::xml_node		config;
 };
 
 extern j1App* App;

@@ -86,7 +86,7 @@ bool j1App::Awake()
 	{
 		// TODO 1: Every awake to receive a xml node with their section of the config file if exists
 
-
+		if (config.child(item->data->name.GetString()) == NULL)
 
 		ret = item->data->Awake();
 		item = item->next;
