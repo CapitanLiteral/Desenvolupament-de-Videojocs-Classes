@@ -19,7 +19,7 @@ j1Window::~j1Window()
 }
 
 // Called before render is available
-bool j1Window::Awake()
+bool j1Window::Awake(pugi::xml_node node)
 {
 	LOG("Init SDL window & surface");
 	bool ret = true;
@@ -33,7 +33,7 @@ bool j1Window::Awake()
 	{
 		//Create window
 		Uint32 flags = SDL_WINDOW_SHOWN;
-		width = App->config.child("window").child("screen_width").attribute("screen_width").as_int();
+		width = node.child("screen_width").attribute("screen_width").as_int();
 		height = App->config.child("window").child("screen_height").attribute("screen_height").as_int();
 		scale = App->config.child("window").child("scale").child_value().as_int(); /*.attribute("scale")*/
 
