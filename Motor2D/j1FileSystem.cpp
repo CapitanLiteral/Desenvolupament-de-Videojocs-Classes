@@ -9,7 +9,7 @@
 
 j1FileSystem::j1FileSystem(const char* game_path) : j1Module()
 {
-	name.create("file_system");
+	name.create("fs");
 
 	// need to be created before Awake so other modules can use it
 	char* base_path = SDL_GetBasePath();
@@ -27,13 +27,13 @@ j1FileSystem::~j1FileSystem()
 }
 
 // Called before render is available
-bool j1FileSystem::Awake()
+bool j1FileSystem::Awake(pugi::xml_node node)
 {
 	LOG("Loading File System");
 	bool ret = true;
 
 	// Ask SDL for a write dir
-	char* write_path = SDL_GetPrefPath(App->config.child("fs").child("organitzation").child_value(), App->config.child("fs").child("appname").child_value());
+	char* write_path = SDL_GetPrefPath(node.child("organitzation").child_value(), node.child("appname").child_value());
 
 	if(PHYSFS_setWriteDir(write_path) == 0)
 		LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());

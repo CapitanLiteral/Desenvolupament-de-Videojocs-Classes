@@ -34,25 +34,25 @@ bool j1Window::Awake(pugi::xml_node node)
 		//Create window
 		Uint32 flags = SDL_WINDOW_SHOWN;
 		width = node.child("screen_width").attribute("screen_width").as_int();
-		height = App->config.child("window").child("screen_height").attribute("screen_height").as_int();
-		scale = App->config.child("window").child("scale").child_value().as_int(); /*.attribute("scale")*/
+		height = node.attribute("screen_height").as_float();
+		scale = node.attribute("screen_height").as_int();
 
-		if(App->config.child("window").child("fullscreen").attribute("fullscreen").as_bool() == true)
+		if(node.attribute("fullscreen").as_bool() == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
 
-		if (App->config.child("window").child("borderless").attribute("borderless").as_bool() == true)
+		if (node.attribute("borderless").as_bool() == true)
 		{
 			flags |= SDL_WINDOW_BORDERLESS;
 		}
 
-		if (App->config.child("window").child("resizable").attribute("resizable").as_bool() == true)
+		if (node.attribute("resizable").as_bool() == true)
 		{
 			flags |= SDL_WINDOW_RESIZABLE;
 		}
 
-		if (App->config.child("window").child("fullscreen_windowed").attribute("fullscreen_windowed").as_bool() == true)
+		if (node.attribute("fullscreen_windowed").as_bool() == true)
 		{
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
@@ -68,7 +68,7 @@ bool j1Window::Awake(pugi::xml_node node)
 		{
 			//Get window surface
 			screen_surface = SDL_GetWindowSurface(window);
-			SetTitle(App->config.child("window").child("name").child_value());
+			SetTitle(node.child("name").child_value());
 		}
 	}
 
