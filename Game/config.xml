@@ -2,9 +2,14 @@
 
 <config>
 	<app>	
-		
+		<title>Game Development</title>
+		<organitzation>Hellsing</organitzation>
 	</app>
 	
+	<renderer>
+		<vsync value="false" />
+	</renderer>
+
 	<window>
 		<name>My super awesome game with XML</name>
 		<fullscreen value="false"/>
@@ -14,10 +19,10 @@
 		<resolution width="1024" height="768" scale="1"/>
 	</window>
 
-	<fs>
-		<organitzation>My awasome studio</organitzation>
-		<appname>My cool game</appname>
-	</fs>
+	<fyle_system>
+		<path>data.zip</path>
+		<path>data2.zip</path>
+	</fyle_system>
 	
 	
 </config>
