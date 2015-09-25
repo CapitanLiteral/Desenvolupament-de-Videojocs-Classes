@@ -1,3 +1,6 @@
+#include <iostream>
+#include <sstream>
+
 #include "p2Defs.h"
 #include "p2Log.h"
 
@@ -21,7 +24,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new j1Textures();
 	audio = new j1Audio();
 	scene = new j1Scene();
-	fs = new j1FileSystem("data.zip");
+	fs = new j1FileSystem();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -62,33 +65,24 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
-	bool ret = true;
-
-	// --- load config file ---
-	char* buf;
-	int size = App->fs->Load("config.xml", &buf);
-	pugi::xml_parse_result result = config_file.load_buffer(buf, size);
-	RELEASE(buf);
-
-	if(result == NULL)
-	{
-		LOG("Could not load map xml file config.xml. pugi error: %s", result.description());
-		ret = false;
-	}
-	else
-		config = config_file.child("config");
-	// ---
+	bool ret = LoadConfig();
 
 	p2List_item<j1Module*>* item;
 	item = modules.start;
 
-	while(item != NULL && ret == true)
-	{
-		// TODO 1: Every awake to receive a xml node with their section of the config file if exists
+	title.create(app_config.child("title").child_value());
+	organization.create(app_config.child("organization").child_value());
 
-		ret = item->data->Awake(config.child(item->data->name.GetString()));
-		item = item->next;
-		
+	if (ret == true)
+	{
+		p2List_item<j1Module*>* item;
+		item = modules.start;
+
+		while (item != NULL && ret == true)
+		{
+			ret = item->data->Awake(config.child(item->data->name.GetString()));
+			item = item->next;
+		}
 	}
 
 	return ret;
@@ -129,6 +123,25 @@ bool j1App::Update()
 		ret = PostUpdate();
 
 	FinishUpdate();
+	return ret;
+}
+// ---------------------------------------------
+bool j1App::LoadConfig()
+{
+	bool ret = true;
+	char* buf;
+	int size = App->fs->Load("config.xml", &buf);
+	pugi::xml_parse_result result = config_file.load_buffer(buf, size);
+	RELEASE(buf);
+
+	if (result == NULL)
+	{
+		LOG("Could not load map xml file config.xml. pugi error: %s", result.description());
+		ret = false;
+	}
+	else
+		config = config_file.child("config");
+
 	return ret;
 }
 
@@ -236,4 +249,16 @@ const char* j1App::GetArgv(int index) const
 		return args[index];
 	else
 		return NULL;
+}
+
+// ---------------------------------------
+const char* j1App::GetTitle() const
+{
+	return title.GetString();
+}
+
+// ---------------------------------------
+const char* j1App::GetOrganization() const
+{
+	return organization.GetString();
 }

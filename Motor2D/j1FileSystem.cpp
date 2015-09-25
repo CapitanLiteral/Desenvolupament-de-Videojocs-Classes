@@ -7,7 +7,7 @@
 
 #pragma comment( lib, "PhysFS/libx86/physfs.lib" )
 
-j1FileSystem::j1FileSystem(const char* game_path) : j1Module()
+j1FileSystem::j1FileSystem() : j1Module()
 {
 	name.create("fs");
 
@@ -17,7 +17,6 @@ j1FileSystem::j1FileSystem(const char* game_path) : j1Module()
 	SDL_free(base_path);
 
 	AddPath(".");
-	AddPath(game_path);
 }
 
 // Destructor
@@ -27,16 +26,28 @@ j1FileSystem::~j1FileSystem()
 }
 
 // Called before render is available
-bool j1FileSystem::Awake(pugi::xml_node& node)
+bool j1FileSystem::Awake(pugi::xml_node& config)
 {
 	LOG("Loading File System");
 	bool ret = true;
 
-	// Ask SDL for a write dir
-	char* write_path = SDL_GetPrefPath(node.child("organitzation").child_value(), node.child("appname").child_value());
+	// Add all paths in configuration in order
+	for (pugi::xml_node path = config.child("path"); path; path = path.next_sibling("path"))
+	{
+		AddPath(path.child_value());
+	}
 
-	if(PHYSFS_setWriteDir(write_path) == 0)
+	// Ask SDL for a write dir
+	char* write_path = SDL_GetPrefPath(App->GetOrganization(), App->GetTitle());
+
+	if (PHYSFS_setWriteDir(write_path) == 0)
 		LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
+	else
+	{
+		// We add the writing directory as a reading directory too with speacial mount point
+		LOG("Writing directory is %s\n", write_path);
+		AddPath(write_path, GetSaveDirectory());
+	}
 
 	SDL_free(write_path);
 
@@ -52,11 +63,11 @@ bool j1FileSystem::CleanUp()
 }
 
 // Add a new zip file or folder
-bool j1FileSystem::AddPath(const char* path_or_zip)
+bool j1FileSystem::AddPath(const char* path_or_zip, const char* mount_point)
 {
 	bool ret = false;
 
-	if(PHYSFS_mount(path_or_zip, NULL, 1) == 0)
+	if(PHYSFS_mount(path_or_zip, mount_point, 1) == 0)
 		LOG("File System error while adding a path or zip: %s\n", PHYSFS_getLastError());
 	else
 		ret = true;
@@ -83,24 +94,24 @@ unsigned int j1FileSystem::Load(const char* file, char** buffer) const
 
 	PHYSFS_file* fs_file = PHYSFS_openRead(file);
 
-	if(fs_file != NULL)
+	if (fs_file != NULL)
 	{
-		PHYSFS_sint32 size = PHYSFS_fileLength(fs_file);
+		PHYSFS_sint64 size = PHYSFS_fileLength(fs_file);
 
-		if(size > 0)
+		if (size > 0)
 		{
-			*buffer = new char[size];
-			int readed = PHYSFS_read(fs_file, *buffer, 1, size);
-			if(readed != size)
+			*buffer = new char[(uint)size];
+			PHYSFS_sint64 readed = PHYSFS_read(fs_file, *buffer, 1, (PHYSFS_sint32)size);
+			if (readed != size)
 			{
 				LOG("File System error while reading from file %s: %s\n", file, PHYSFS_getLastError());
 				RELEASE(buffer);
 			}
 			else
-				ret = readed;
+				ret = (uint)readed;
 		}
 
-		if(PHYSFS_close(fs_file) == 0)
+		if (PHYSFS_close(fs_file) == 0)
 			LOG("File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
 	}
 	else

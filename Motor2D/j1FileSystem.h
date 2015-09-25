@@ -11,21 +11,25 @@ class j1FileSystem : public j1Module
 {
 public:
 
-	j1FileSystem(const char* game_path);
+	j1FileSystem();
 
 	// Destructor
 	virtual ~j1FileSystem();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& node);
+	bool Awake(pugi::xml_node&);
 
 	// Called before quitting
 	bool CleanUp();
 
 	// Utility functions
-	bool AddPath(const char* path_or_zip);
+	bool AddPath(const char* path_or_zip, const char* mount_point = NULL);
 	bool Exists(const char* file) const;
 	bool IsDirectory(const char* file) const;
+	const char* GetSaveDirectory()const
+	{
+		return "save/";
+	}
 
 	// Open for Read/Write
 	unsigned int Load(const char* file, char** buffer) const;

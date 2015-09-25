@@ -41,8 +41,13 @@ public:
 
 	int GetArgc() const;
 	const char* GetArgv(int index) const;
+	const char* GetTitle() const;
+	const char* GetOrganization() const;
 
 private:
+
+	//Load config
+	bool LoadConfig();
 
 	// Call modules before each loop iteration
 	void PrepareUpdate();
@@ -79,8 +84,12 @@ private:
 	int					argc;
 	char**				args;
 
+	p2SString			title;
+	p2SString			organization;
+
 	pugi::xml_document	config_file;
 	pugi::xml_node		config;
+	pugi::xml_node		app_config;
 };
 
 extern j1App* App;
