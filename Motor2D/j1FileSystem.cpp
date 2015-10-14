@@ -9,13 +9,15 @@
 
 j1FileSystem::j1FileSystem() : j1Module()
 {
-	name.create("fyle_system");
+	name.create("file_system");
 
 	// need to be created before Awake so other modules can use it
 	char* base_path = SDL_GetBasePath();
 	PHYSFS_init(base_path);
 	SDL_free(base_path);
 
+	// By default we include executable's own directory
+	// without this we won't be able to find config.xml :-(
 	AddPath(".");
 }
 
@@ -32,7 +34,7 @@ bool j1FileSystem::Awake(pugi::xml_node& config)
 	bool ret = true;
 
 	// Add all paths in configuration in order
-	for (pugi::xml_node path = config.child("path"); path; path = path.next_sibling("path"))
+	for(pugi::xml_node path = config.child("path"); path; path = path.next_sibling("path"))
 	{
 		AddPath(path.child_value());
 	}
@@ -40,7 +42,7 @@ bool j1FileSystem::Awake(pugi::xml_node& config)
 	// Ask SDL for a write dir
 	char* write_path = SDL_GetPrefPath(App->GetOrganization(), App->GetTitle());
 
-	if (PHYSFS_setWriteDir(write_path) == 0)
+	if(PHYSFS_setWriteDir(write_path) == 0)
 		LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
 	else
 	{
@@ -58,7 +60,6 @@ bool j1FileSystem::Awake(pugi::xml_node& config)
 bool j1FileSystem::CleanUp()
 {
 	//LOG("Freeing File System subsystem");
-
 	return true;
 }
 
@@ -68,7 +69,7 @@ bool j1FileSystem::AddPath(const char* path_or_zip, const char* mount_point)
 	bool ret = false;
 
 	if(PHYSFS_mount(path_or_zip, mount_point, 1) == 0)
-		LOG("File System error while adding a path or zip: %s\n", PHYSFS_getLastError());
+		LOG("File System error while adding a path or zip(%s): %s\n", path_or_zip, PHYSFS_getLastError());
 	else
 		ret = true;
 
@@ -94,15 +95,15 @@ unsigned int j1FileSystem::Load(const char* file, char** buffer) const
 
 	PHYSFS_file* fs_file = PHYSFS_openRead(file);
 
-	if (fs_file != NULL)
+	if(fs_file != NULL)
 	{
 		PHYSFS_sint64 size = PHYSFS_fileLength(fs_file);
 
-		if (size > 0)
+		if(size > 0)
 		{
 			*buffer = new char[(uint)size];
 			PHYSFS_sint64 readed = PHYSFS_read(fs_file, *buffer, 1, (PHYSFS_sint32)size);
-			if (readed != size)
+			if(readed != size)
 			{
 				LOG("File System error while reading from file %s: %s\n", file, PHYSFS_getLastError());
 				RELEASE(buffer);
@@ -111,7 +112,7 @@ unsigned int j1FileSystem::Load(const char* file, char** buffer) const
 				ret = (uint)readed;
 		}
 
-		if (PHYSFS_close(fs_file) == 0)
+		if(PHYSFS_close(fs_file) == 0)
 			LOG("File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
 	}
 	else
@@ -154,11 +155,11 @@ unsigned int j1FileSystem::Save(const char* file, const char* buffer, unsigned i
 
 	if(fs_file != NULL)
 	{
-		unsigned int written = PHYSFS_write(fs_file, (const void*)buffer, 1, size);
+		PHYSFS_sint64 written = PHYSFS_write(fs_file, (const void*)buffer, 1, size);
 		if(written != size)
 			LOG("File System error while writing to file %s: %s\n", file, PHYSFS_getLastError());
 		else
-			ret = written;
+			ret = (uint) written;
 
 		if(PHYSFS_close(fs_file) == 0)
 			LOG("File System error while closing file %s: %s\n", file, PHYSFS_getLastError());

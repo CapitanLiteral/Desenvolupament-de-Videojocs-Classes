@@ -1,28 +1,29 @@
-20:35 24/09/2015<!-- Config file for the game JCV -->
+<!-- Config file for the game -->
 
 <config>
-	<app>	
-		<title>Game Development</title>
-		<organitzation>Hellsing</organitzation>
-	</app>
+  <app>
+    <title>Game Development Testbed</title>
+    <organization>UPC</organization>
+  </app>
 	
-	<renderer>
-		<vsync value="false" />
-	</renderer>
+  <renderer>
+    <vsync value="false"/>
+  </renderer>
 
-	<window>
-		<name>My super awesome game with XML</name>
-		<fullscreen value="false"/>
-		<borderless value="false"/>
-		<resizable value="false"/>
-		<fullscreen_windowed value="false"/>
-		<resolution width="1024" height="768" scale="1"/>
-	</window>
+  <window>
+    <resolution width="1024" height="768" scale="1"/>
+    <fullscreen value="false"/>
+    <borderless value="false"/>
+    <resizable value="false"/>
+    <fullscreen_window value="false"/>
+  </window>
 
-	<fyle_system>
-		<path>data.zip</path>
-		<path>data2.zip</path>
-	</fyle_system>
-	
-	
+  <file_system>
+    <path>data.zip</path>
+  </file_system>
+
+  <map>
+    <folder>maps/</folder>
+  </map>
+
 </config>

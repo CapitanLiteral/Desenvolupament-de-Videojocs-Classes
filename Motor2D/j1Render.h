@@ -15,7 +15,7 @@ public:
 	virtual ~j1Render();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& node);
+	bool Awake(pugi::xml_node&);
 
 	// Called before the first frame
 	bool Start();
@@ -27,6 +27,10 @@ public:
 
 	// Called before quitting
 	bool CleanUp();
+
+	// Load / Save
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&) const;
 
 	// Blit
 	void SetViewPort(const SDL_Rect& rect);

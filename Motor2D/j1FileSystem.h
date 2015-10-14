@@ -26,7 +26,7 @@ public:
 	bool AddPath(const char* path_or_zip, const char* mount_point = NULL);
 	bool Exists(const char* file) const;
 	bool IsDirectory(const char* file) const;
-	const char* GetSaveDirectory()const
+	const char* GetSaveDirectory() const
 	{
 		return "save/";
 	}

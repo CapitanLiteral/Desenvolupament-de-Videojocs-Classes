@@ -18,7 +18,9 @@ public:
 	virtual ~j1Audio();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& node);
+	bool Awake(pugi::xml_node&);
+
+	bool Update(float dt);
 
 	// Called before quitting
 	bool CleanUp();
@@ -31,11 +33,17 @@ public:
 
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
+	bool Save(pugi::xml_node&)const;
+	bool Load(pugi::xml_node&);
+
 
 private:
 
-	_Mix_Music*			music;
+	_Mix_Music*			music = NULL;
 	p2List<Mix_Chunk*>	fx;
+
+public:
+	int music_volume;
 };
 
 #endif // __j1AUDIO_H__
