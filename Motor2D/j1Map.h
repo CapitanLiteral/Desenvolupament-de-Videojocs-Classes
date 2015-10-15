@@ -25,13 +25,14 @@ struct MapLayer
 	// TODO 6 (old): Short function to get the value of x,y
 	inline uint Get(int x, int y) const
 	{
-		return 0;
+		return data[(y*width) + x];
 	}
 };
 
 // ----------------------------------------------------
 struct TileSet
 {
+	// TODO 7(old): Create a method that receives a tile id and returns it's Rectfind the Rect associated with a specific tile id
 	SDL_Rect GetTileRect(int id) const;
 
 	p2SString			name;
@@ -66,6 +67,7 @@ struct MapData
 	SDL_Color			background_color;
 	MapTypes			type;
 	p2List<TileSet*>	tilesets;
+	// TODO 2: Add a list/array of layers to the map!
 	p2List<MapLayer*>	layers;
 };
 
@@ -91,7 +93,7 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
-	// Coordinate translation methods
+	// TODO 8(old): Create a method that translates x,y coordinates from map positions to world positions
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 

@@ -31,8 +31,8 @@ bool j1Scene::Awake()
 bool j1Scene::Start()
 {
 	//App->map->Load("hello2.tmx");
-	//App->map->Load("iso.tmx");
-	img = App->tex->Load("textures/test.png");
+	App->map->Load("iso.tmx");
+	//img = App->tex->Load("textures/test.png");
 	App->audio->PlayMusic("audio/music/music_sadpiano.ogg");
 	
 	return true;
@@ -54,16 +54,16 @@ bool j1Scene::Update(float dt)
 		App->SaveGame("save_game.xml");
 
 	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		App->render->camera.y -= 1;
-
-	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 		App->render->camera.y += 1;
 
+	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		App->render->camera.y -= 1;
+
 	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		App->render->camera.x -= 1;
+		App->render->camera.x += 1;
 
 	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		App->render->camera.x += 1;
+		App->render->camera.x -= 1;
 
 	if ((App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN) && App->audio->music_volume < 128)
 		App->audio->music_volume += 4;
@@ -71,20 +71,19 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_KP_MINUS) == KEY_DOWN && App->audio->music_volume > 0)
 		App->audio->music_volume -= 4;
 
-	//App->map->Draw();
-	App->render->Blit(img, 0, 0);
+	App->map->Draw();
 
 	int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
 	p2SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d Volume: %i Camera.x: %i Camera.y: %i",
-					App->map->data.width, App->map->data.height,
-					App->map->data.tile_width, App->map->data.tile_height,
-					App->map->data.tilesets.count(),
-					map_coordinates.x, map_coordinates.y,
-					App->audio->music_volume,
-					App->render->camera.x,
-					App->render->camera.y);
+		App->map->data.width, App->map->data.height,
+		App->map->data.tile_width, App->map->data.tile_height,
+		App->map->data.tilesets.count(),
+		map_coordinates.x, map_coordinates.y,
+		App->audio->music_volume,
+		App->render->camera.x,
+		App->render->camera.y);
 
 	App->win->SetTitle(title.GetString());
 	return true;
