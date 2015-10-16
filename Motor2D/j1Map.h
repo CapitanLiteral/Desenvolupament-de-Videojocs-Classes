@@ -13,6 +13,7 @@ struct MapLayer
 	int			width;
 	int			height;
 	uint*		data;
+	bool		visible;
 
 	MapLayer() : data(NULL)
 	{}

@@ -33,22 +33,24 @@ void j1Map::Draw()
 		return;
 
 	// TODO 5: Prepare the loop to draw all tilesets + Blit
-	MapLayer* layer = data.layers.start->data;
-
-	for(int y = 0; y < data.height; ++y)
+	for (p2List_item<MapLayer*>* lay = data.layers.start; lay != NULL; lay = lay->next)
 	{
-		for(int x = 0; x < data.width; ++x)
+		for (int y = 0; y < data.height; ++y)
 		{
-			int tile_id = layer->Get(x, y);
-			if(tile_id > 0)
+			for (int x = 0; x < data.width; ++x)
 			{
-				// TODO 10(old): Complete the draw function
-				TileSet* tileset = data.tilesets.start->data;
+				int tile_id = lay->data->Get(x, y);
+				if (tile_id > 0)
+				{
+					// TODO 10(old): Complete the draw function
+					TileSet* tileset = data.tilesets.start->data;
 
-				SDL_Rect r = tileset->GetTileRect(tile_id);
-				iPoint pos = MapToWorld(x, y);
+					SDL_Rect r = tileset->GetTileRect(tile_id);
+					iPoint pos = MapToWorld(x, y);
 
-				App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+					if (lay->data->visible == 1)
+						App->render->Blit(tileset->texture, pos.x, pos.y, &r);
+				}
 			}
 		}
 	}
@@ -373,6 +375,8 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->name = node.attribute("name").as_string();
 	layer->width = node.attribute("width").as_int();
 	layer->height = node.attribute("height").as_int();
+	layer->visible = node.child("properties").child("property").attribute("value").as_int();
+	LOG("Visibility: %i", layer->visible);
 	pugi::xml_node layer_data = node.child("data");
 
 	if(layer_data == NULL)
