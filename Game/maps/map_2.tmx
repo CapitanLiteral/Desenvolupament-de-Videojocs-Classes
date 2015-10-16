@@ -615,7 +615,7 @@
  </layer>
  <layer name="Tile Layer 2" width="30" height="20">
   <properties>
-   <property name="visibility" value="0"/>
+   <property name="visibility" value="1"/>
   </properties>
   <data>
    <tile gid="0"/>
