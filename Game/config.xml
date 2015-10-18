@@ -18,6 +18,10 @@
     <fullscreen_window value="false"/>
   </window>
 
+  <scene>
+    <map>map_2.tmx</map>
+  </scene>
+  
   <file_system>
     <path>data.zip</path>
   </file_system>

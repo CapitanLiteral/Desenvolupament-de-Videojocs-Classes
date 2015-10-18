@@ -19,22 +19,18 @@ j1Scene::~j1Scene()
 {}
 
 // Called before render is available
-bool j1Scene::Awake()
+bool j1Scene::Awake(pugi::xml_node& scene)
 {
 	LOG("Loading Scene");
 	bool ret = true;
-
+	map.create(scene.child("map").child_value());
 	return ret;
 }
 
 // Called before the first frame
 bool j1Scene::Start()
 {
-	//App->map->Load("hello2.tmx");
-	//App->map->Load("iso.tmx");
-	App->map->Load("map_2.tmx");
-	//App->map->Load("iso_2.tmx");
-	//img = App->tex->Load("textures/test.png");
+	App->map->Load(map.GetString());
 	App->audio->PlayMusic("audio/music/music_sadpiano.ogg");
 	
 	return true;
