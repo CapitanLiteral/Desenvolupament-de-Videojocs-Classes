@@ -36,7 +36,7 @@
   <image source="perspective_walls.png" width="256" height="256"/>
  </tileset>
  <tileset firstgid="46" name="perspective_walls" tilewidth="25" tileheight="25" tilecount="100">
-  <image source="../../../../../../../Program Files (x86)/Tiled/examples/perspective_walls.png" width="256" height="256"/>
+  <image source="perspective_walls.png" width="256" height="256"/>
  </tileset>
  <layer name="Capa de Patrones 1" width="25" height="25">
   <properties>
