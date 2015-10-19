@@ -32,12 +32,6 @@
   <tile id="22" terrain="1,1,1,1"/>
   <tile id="23" terrain="1,1,1,1"/>
  </tileset>
- <tileset firstgid="25" name="perspective_walls" tilewidth="64" tileheight="32" spacing="1" margin="1" tilecount="21">
-  <image source="perspective_walls.png" width="256" height="256"/>
- </tileset>
- <tileset firstgid="46" name="perspective_walls" tilewidth="25" tileheight="25" tilecount="100">
-  <image source="perspective_walls.png" width="256" height="256"/>
- </tileset>
  <layer name="Capa de Patrones 1" width="25" height="25">
   <properties>
    <property name="visibility" value="1"/>

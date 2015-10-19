@@ -22,7 +22,7 @@ enum MainState
 };
 
 j1App* App = NULL;
-
+#define printf LOG
 int main(int argc, char* args[])
 {
 	LOG("Engine starting ... %d");

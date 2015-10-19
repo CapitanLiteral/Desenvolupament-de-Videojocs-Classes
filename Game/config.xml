@@ -19,7 +19,9 @@
   </window>
 
   <scene>
-    <map>map_2.tmx</map>
+    <map>map_exam1.tmx</map>
+	<cameraspeed x="5" y="5" />
+	<playerpos x="10" y="10" />
   </scene>
   
   <file_system>

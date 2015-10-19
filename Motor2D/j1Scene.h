@@ -15,7 +15,7 @@ public:
 	virtual ~j1Scene();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& scene);
+	bool Awake(pugi::xml_node& config);
 
 	// Called before the first frame
 	bool Start();
@@ -32,7 +32,16 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	//Save/Load
+	bool Load(pugi::xml_node&);
+	bool Save(pugi::xml_node&) const;
+
 private:
+
+	float player_x;
+	float player_y;
+	SDL_Texture* debug_tex;
+	int camera_speed_x, camera_speed_y;
 	p2SString map;
 };
 
