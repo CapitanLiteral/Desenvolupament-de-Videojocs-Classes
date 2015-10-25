@@ -3,8 +3,24 @@
 
 #include "PugiXml/src/pugixml.hpp"
 #include "p2List.h"
+#include "p2SString.h"
 #include "p2Point.h"
 #include "j1Module.h"
+
+// ----------------------------------------------------
+struct Properties
+{
+	// TODO 5: Create a generic structure to hold properties
+	struct Prop
+	{
+		p2SString	name;
+		int			value;
+	};
+
+	p2List<Prop*>* property;
+	// TODO 7: Our custom properties should have one method
+	// to ask for the value of a custom property
+};
 
 // ----------------------------------------------------
 struct MapLayer
@@ -13,7 +29,7 @@ struct MapLayer
 	int			width;
 	int			height;
 	uint*		data;
-	bool		visible;
+	Properties	properties;
 
 	MapLayer() : data(NULL)
 	{}
@@ -23,7 +39,6 @@ struct MapLayer
 		RELEASE(data);
 	}
 
-	// TODO 6 (old): Short function to get the value of x,y
 	inline uint Get(int x, int y) const
 	{
 		return data[(y*width) + x];
@@ -33,7 +48,6 @@ struct MapLayer
 // ----------------------------------------------------
 struct TileSet
 {
-	// TODO 7(old): Create a method that receives a tile id and returns it's Rectfind the Rect associated with a specific tile id
 	SDL_Rect GetTileRect(int id) const;
 
 	p2SString			name;
@@ -68,7 +82,6 @@ struct MapData
 	SDL_Color			background_color;
 	MapTypes			type;
 	p2List<TileSet*>	tilesets;
-	// TODO 2: Add a list/array of layers to the map!
 	p2List<MapLayer*>	layers;
 };
 
@@ -94,7 +107,6 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
-	// TODO 8(old): Create a method that translates x,y coordinates from map positions to world positions
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
 
@@ -104,6 +116,9 @@ private:
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
+	bool LoadProperties(pugi::xml_node& node, Properties& properties);
+
+	TileSet* GetTilesetFromTileId(int id) const;
 
 public:
 
