@@ -19,7 +19,7 @@
   </window>
 
   <scene>
-    <map>map_exam1.tmx</map>
+    <map>iso.tmx</map>
 	<cameraspeed x="5" y="5" />
 	<playerpos x="10" y="10" />
   </scene>
