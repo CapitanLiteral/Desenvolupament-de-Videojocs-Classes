@@ -37,6 +37,12 @@
     <ClCompile Include="j1Map.cpp">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="j1Timer.cpp">
+      <Filter>Desenvolupament  ========\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="j1PerfTimer.cpp">
+      <Filter>Desenvolupament  ========\Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1Window.h">
@@ -93,6 +99,10 @@
     <ClInclude Include="j1Map.h">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="j1Timer.h">
+      <Filter>Desenvolupament  ========\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="j1PerfTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Programacio 2 ===========">
