@@ -88,6 +88,16 @@ public:
 	j1FileSystem*		fs;
 	j1Map*				map;
 
+
+	j1Timer* timer;
+	uint64 frame_count;
+	float avg_fps = 0.0f;
+	uint32 last_frame_ms;
+	int frames_lastSec;
+	uint32 frames_on_last_update = 0;
+	float dts;
+	float seconds_since_startup = 0.0f;
+
 private:
 
 	p2List<j1Module*>	modules;

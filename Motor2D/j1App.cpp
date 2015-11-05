@@ -29,6 +29,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	fs = new j1FileSystem();
 	map = new j1Map();
 
+	timer = new j1Timer();
+
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
 	AddModule(fs);
@@ -67,6 +69,14 @@ void j1App::AddModule(j1Module* module)
 // Called before render is available
 bool j1App::Awake()
 {
+	uint32 time = timer->Read();
+	frame_count = 0;
+	avg_fps = 0.0f;
+	last_frame_ms = 0.0f;
+	frames_lastSec = 0;
+	dts = 0.0f;
+	seconds_since_startup = 0.0f;
+
 	pugi::xml_document	config_file;
 	pugi::xml_node		config;
 	pugi::xml_node		app_config;
@@ -96,44 +106,52 @@ bool j1App::Awake()
 		}
 	}
 
+	LOG("Time AWAKE lasted: %d ms", timer->Read() - time);
 	return ret;
 }
 
 // Called before the first frame
 bool j1App::Start()
 {
+	uint32 time = timer->Read();
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.start;
 
-	while(item != NULL && ret == true)
+	while (item != NULL && ret == true)
 	{
 		ret = item->data->Start();
 		item = item->next;
 	}
-
+	LOG("Time START lasted: %d ms", timer->Read() - time);
 	return ret;
 }
 
 // Called each loop iteration
 bool j1App::Update()
 {
+	last_frame_ms = timer->Read();
+	uint32 time = timer->Read();
+
 	bool ret = true;
 	PrepareUpdate();
 
-	if(input->GetWindowEvent(WE_QUIT) == true)
+	if (input->GetWindowEvent(WE_QUIT) == true)
 		ret = false;
 
-	if(ret == true)
+	if (ret == true)
 		ret = PreUpdate();
 
-	if(ret == true)
+	if (ret == true)
 		ret = DoUpdate();
 
-	if(ret == true)
+	if (ret == true)
 		ret = PostUpdate();
 
 	FinishUpdate();
+
+	LOG("Time UPDATE lasted: %d ms", timer->Read() - time);
 	return ret;
 }
 
@@ -168,6 +186,27 @@ void j1App::FinishUpdate()
 
 	if(want_to_load == true)
 		LoadGameNow();
+
+	// TODO 4: Now calculate:
+	// Amount of frames since startup
+	// Amount of time since game start (use a low resolution timer)
+	// Average FPS for the whole game life
+	// Amount of ms took the last update
+	// Amount of frames during the last second
+	uint32 last_frame_ms1;
+
+	frame_count++;
+	seconds_since_startup = timer->ReadSec();
+	dts = timer->Read();
+	avg_fps = frame_count / seconds_since_startup;
+	last_frame_ms1 = timer->Read() - last_frame_ms;
+
+	//-------------------------------------------------------
+	static char title[256];
+	sprintf_s(title, 256, "Av.FPS: %.2f Last Frame Ms: %u Last sec frames: %i Last dt: %.3f Time since startup: %.3f Frame Count: %lu ",
+		avg_fps, last_frame_ms1, frames_on_last_update, dts, seconds_since_startup, frame_count);
+
+	App->win->SetTitle(title);
 }
 
 // Call modules before each loop iteration
@@ -238,16 +277,19 @@ bool j1App::PostUpdate()
 // Called before quitting
 bool j1App::CleanUp()
 {
+	uint32 time = timer->Read();
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.end;
 
-	while(item != NULL && ret == true)
+	while (item != NULL && ret == true)
 	{
 		ret = item->data->CleanUp();
 		item = item->prev;
 	}
 
+	LOG("Time CleanUp lasted: %d ms", timer->Read() - time);
 	return ret;
 }
 

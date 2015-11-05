@@ -116,7 +116,7 @@ bool j1Scene::Update(float dt)
 	App->render->Blit(debug_tex, p.x, p.y);
 
 	// Set Title
-	int x, y;
+	/*int x, y;
 	App->input->GetMousePosition(x, y);
 	iPoint map_coordinates = App->map->WorldToMap(x - App->render->camera.x, y - App->render->camera.y);
 	p2SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d Tile:%d,%d Volume: %i Camera.x: %i Camera.y: %i",
@@ -128,7 +128,7 @@ bool j1Scene::Update(float dt)
 		App->render->camera.x,
 		App->render->camera.y);
 
-	App->win->SetTitle(title.GetString());
+	App->win->SetTitle(title.GetString());*/
 	return true;
 }
 
