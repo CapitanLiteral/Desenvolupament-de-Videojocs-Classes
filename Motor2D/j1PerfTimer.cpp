@@ -13,7 +13,8 @@ j1PerfTimer::j1PerfTimer()
 {
 	// TODO 2: Fill Constructor, Start(),ReadMs() and ReadTicks() methods
 	// they are simple, one line each!
-
+	if (frequency==0)
+		frequency = SDL_GetPerformanceFrequency();
 	Start();
 }
 
@@ -25,7 +26,6 @@ void j1PerfTimer::Start()
 {
 	//SDL_GetPerformanceCounter() returns the CPU cycles
 	started_at = SDL_GetPerformanceCounter();
-	frequency = SDL_GetPerformanceFrequency();
 }
 
 // ---------------------------------------------
@@ -34,7 +34,7 @@ Retorna el tiempo transcurrido en milisegundos des del principio del programa. C
 */
 double j1PerfTimer::ReadMs() const
 {
-	return ((SDL_GetPerformanceCounter() - started_at) / frequency) * 1000;
+	return (((double)SDL_GetPerformanceCounter() - started_at) / (double)frequency) * 1000;
 }
 
 // ---------------------------------------------

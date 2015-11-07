@@ -10,18 +10,30 @@
 // ----------------------------------------------------
 struct Properties
 {
-	// TODO 5: Create a generic structure to hold properties
-	struct Prop
+	struct Property
 	{
-		p2SString	name;
-		int			value;
+		p2SString name;
+		int value;
 	};
 
-	p2List<Prop*>* property;
-	// TODO 7: Our custom properties should have one method
-	// to ask for the value of a custom property
-};
+	~Properties()
+	{
+		p2List_item<Property*>* item;
+		item = list.start;
 
+		while (item != NULL)
+		{
+			RELEASE(item->data);
+			item = item->next;
+		}
+
+		list.clear();
+	}
+
+	int Get(const char* name, int default_value = 0) const;
+
+	p2List<Property*>	list;
+};
 // ----------------------------------------------------
 struct MapLayer
 {
@@ -109,6 +121,7 @@ public:
 
 	iPoint MapToWorld(int x, int y) const;
 	iPoint WorldToMap(int x, int y) const;
+	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
 private:
 

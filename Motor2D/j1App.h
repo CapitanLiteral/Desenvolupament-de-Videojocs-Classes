@@ -16,6 +16,7 @@ class j1Audio;
 class j1FileSystem;
 class j1Scene;
 class j1Map;
+class j1PathFinding;
 
 class j1App
 {
@@ -79,40 +80,38 @@ private:
 public:
 
 	// Modules
-	j1Window*			win;
-	j1Input*			input;
-	j1Render*			render;
-	j1Textures*			tex;
-	j1Audio*			audio;
-	j1Scene*			scene;
-	j1FileSystem*		fs;
-	j1Map*				map;
-
-
-	j1Timer* timer;
-	uint64 frame_count;
-	float avg_fps = 0.0f;
-	uint32 last_frame_ms;
-	int frames_lastSec;
-	uint32 frames_on_last_update = 0;
-	float dts;
-	float seconds_since_startup = 0.0f;
+	j1Window*			win = NULL;
+	j1Input*			input = NULL;
+	j1Render*			render = NULL;
+	j1Textures*			tex = NULL;
+	j1Audio*			audio = NULL;
+	j1Scene*			scene = NULL;
+	j1FileSystem*		fs = NULL;
+	j1Map*				map = NULL;
+	j1PathFinding*		pathfinding = NULL;
 
 private:
 
 	p2List<j1Module*>	modules;
-	uint				frames;
-	float				dt;
 	int					argc;
 	char**				args;
 
 	p2SString			title;
 	p2SString			organization;
 
-	mutable bool		want_to_save;
-	bool				want_to_load;
+	mutable bool		want_to_save = false;
+	bool				want_to_load = false;
 	p2SString			load_game;
 	mutable p2SString	save_game;
+
+	j1PerfTimer			ptimer;
+	uint64				frame_count = 0;
+	j1Timer				startup_time;
+	j1Timer				frame_time;
+	j1Timer				last_sec_frame_time;
+	uint32				last_sec_frame_count = 0;
+	uint32				prev_last_sec_frame_count = 0;
+	float				dt = 0;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

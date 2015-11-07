@@ -32,14 +32,20 @@ void j1Map::Draw()
 	if (map_loaded == false)
 		return;
 
-	// TODO 4: Make sure we draw all the layers and not just the first one
-	for (p2List_item<MapLayer*>* lay = data.layers.start; lay != NULL; lay = lay->next)
+	p2List_item<MapLayer*>* item = data.layers.start;
+
+	for (; item != NULL; item = item->next)
 	{
+		MapLayer* layer = item->data;
+
+		if (layer->properties.Get("Nodraw") != 0)
+			continue;
+
 		for (int y = 0; y < data.height; ++y)
 		{
 			for (int x = 0; x < data.width; ++x)
 			{
-				int tile_id = lay->data->Get(x, y);
+				int tile_id = layer->Get(x, y);
 				if (tile_id > 0)
 				{
 					TileSet* tileset = GetTilesetFromTileId(tile_id);
@@ -54,26 +60,34 @@ void j1Map::Draw()
 	}
 }
 
+int Properties::Get(const char* value, int default_value) const
+{
+	p2List_item<Property*>* item = list.start;
+
+	while (item)
+	{
+		if (item->data->name == value)
+			return item->data->value;
+		item = item->next;
+	}
+
+	return default_value;
+}
+
 TileSet* j1Map::GetTilesetFromTileId(int id) const
 {
-	// TODO 3: Complete this method so we pick the right
-	// Tileset based on a tile id
+	p2List_item<TileSet*>* item = data.tilesets.start;
+	TileSet* set = item->data;
 
-	TileSet* set = NULL;
-
-	for (p2List_item<TileSet*>* tmp = data.tilesets.start; tmp != NULL; tmp = tmp->next)
+	while (item)
 	{
-		if (tmp->next == NULL)
+		if (id < item->data->firstgid)
 		{
-			set = tmp->data;
+			set = item->prev->data;
+			break;
 		}
-		else
-		{
-			if (id >= tmp->data->firstgid && id < tmp->next->data->firstgid)
-				return tmp->data;
-			else
-				set = data.tilesets.start->data;
-		}
+		set = item->data;
+		item = item->next;
 	}
 
 	return set;
@@ -90,8 +104,8 @@ iPoint j1Map::MapToWorld(int x, int y) const
 	}
 	else if (data.type == MAPTYPE_ISOMETRIC)
 	{
-		ret.x = int((x - y) * (data.tile_width * 0.5f));
-		ret.y = int((x + y) * (data.tile_height * 0.5f));
+		ret.x = (x - y) * (data.tile_width * 0.5f);
+		ret.y = (x + y) * (data.tile_height * 0.5f);
 	}
 	else
 	{
@@ -116,7 +130,7 @@ iPoint j1Map::WorldToMap(int x, int y) const
 
 		float half_width = data.tile_width * 0.5f;
 		float half_height = data.tile_height * 0.5f;
-		ret.x = int((x / half_width + y / half_height) / 2);
+		ret.x = int((x / half_width + y / half_height) / 2) - 1;
 		ret.y = int((y / half_height - (x / half_width)) / 2);
 	}
 	else
@@ -422,8 +436,71 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 {
 	bool ret = false;
-	// TODO 6: Fill in the method to fill the custom properties from 
-	// an xml_node
+
+	pugi::xml_node data = node.child("properties");
+
+	if (data != NULL)
+	{
+		pugi::xml_node prop;
+
+		for (prop = data.child("property"); prop; prop = prop.next_sibling("property"))
+		{
+			Properties::Property* p = new Properties::Property();
+
+			p->name = prop.attribute("name").as_string();
+			p->value = prop.attribute("value").as_int();
+
+			properties.list.add(p);
+		}
+	}
+
+	return ret;
+}
+
+bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
+{
+	bool ret = false;
+	p2List_item<MapLayer*>* item;
+	item = data.layers.start;
+
+	for (item = data.layers.start; item != NULL; item = item->next)
+	{
+		MapLayer* layer = item->data;
+
+		if (layer->properties.Get("Navigation", 0) == 0)
+			continue;
+
+		uchar* map = new uchar[layer->width*layer->height];
+		memset(map, 1, layer->width*layer->height);
+
+		for (int y = 0; y < data.height; ++y)
+		{
+			for (int x = 0; x < data.width; ++x)
+			{
+				int i = (y*layer->width) + x;
+
+				int tile_id = layer->Get(x, y);
+				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
+
+				if (tileset != NULL)
+				{
+					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					/*TileType* ts = tileset->GetTileType(tile_id);
+					if(ts != NULL)
+					{
+					map[i] = ts->properties.Get("walkable", 1);
+					}*/
+				}
+			}
+		}
+
+		*buffer = map;
+		width = data.width;
+		height = data.height;
+		ret = true;
+
+		break;
+	}
 
 	return ret;
 }

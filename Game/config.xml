@@ -2,12 +2,12 @@
 
 <config>
   <app>
-    <title>Game Development Testbed</title>
+    <title>Pathfinding Test</title>
     <organization>UPC</organization>
   </app>
 	
   <renderer>
-    <vsync value="false"/>
+    <vsync value="true"/>
   </renderer>
 
   <window>
@@ -18,12 +18,6 @@
     <fullscreen_window value="false"/>
   </window>
 
-  <scene>
-    <map>iso.tmx</map>
-	<cameraspeed x="5" y="5" />
-	<playerpos x="10" y="10" />
-  </scene>
-  
   <file_system>
     <path>data.zip</path>
   </file_system>
