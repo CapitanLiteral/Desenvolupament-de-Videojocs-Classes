@@ -11,37 +11,28 @@ uint64 j1PerfTimer::frequency = 0;
 // ---------------------------------------------
 j1PerfTimer::j1PerfTimer()
 {
-	// TODO 2: Fill Constructor, Start(),ReadMs() and ReadTicks() methods
-	// they are simple, one line each!
-	if (frequency==0)
+	if(frequency == 0)
 		frequency = SDL_GetPerformanceFrequency();
+
 	Start();
 }
 
 // ---------------------------------------------
-/**
-Se llama antes del primer frame e inicializa el modulo, guarda la freqüencia de la CPU y guardamos los ticks iniciales.
-*/
 void j1PerfTimer::Start()
 {
-	//SDL_GetPerformanceCounter() returns the CPU cycles
 	started_at = SDL_GetPerformanceCounter();
 }
 
 // ---------------------------------------------
-/**
-Retorna el tiempo transcurrido en milisegundos des del principio del programa. Con la variación de ticks, la freqüencia podemos saber los segundos transcurridos.
-*/
 double j1PerfTimer::ReadMs() const
 {
-	return (((double)SDL_GetPerformanceCounter() - started_at) / (double)frequency) * 1000;
+	return 1000.0 * (double(SDL_GetPerformanceCounter() - started_at) / double(frequency));
 }
 
 // ---------------------------------------------
-/**
-Retorna los ticks(ciclos de CPU) transcurridos des del principio del programa.
-*/
 uint64 j1PerfTimer::ReadTicks() const
 {
 	return SDL_GetPerformanceCounter() - started_at;
 }
+
+

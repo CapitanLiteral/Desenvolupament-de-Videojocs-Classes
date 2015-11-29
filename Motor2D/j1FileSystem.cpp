@@ -169,18 +169,3 @@ unsigned int j1FileSystem::Save(const char* file, const char* buffer, unsigned i
 
 	return ret;
 }
-
-bool j1FileSystem::deleteFile(const char* filename)
-{
-	bool ret = true;
-
-	if (PHYSFS_delete(filename) == 0)
-	{
-		ret = false;
-		LOG("ERROR while delteing %s because of: %s", filename, PHYSFS_getLastError());
-	}
-	else
-		LOG("The file %s does no longer exist", filename);
-
-	return ret;
-}

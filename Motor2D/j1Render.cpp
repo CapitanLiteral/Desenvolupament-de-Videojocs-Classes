@@ -67,11 +67,6 @@ bool j1Render::PreUpdate()
 	return true;
 }
 
-bool j1Render::Update(float dt)
-{
-	return true;
-}
-
 bool j1Render::PostUpdate()
 {
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
@@ -120,6 +115,17 @@ void j1Render::SetViewPort(const SDL_Rect& rect)
 void j1Render::ResetViewPort()
 {
 	SDL_RenderSetViewport(renderer, &viewport);
+}
+
+iPoint j1Render::ScreenToWorld(int x, int y) const
+{
+	iPoint ret;
+	int scale = App->win->GetScale();
+
+	ret.x = (x - camera.x / scale);
+	ret.y = (y - camera.y / scale);
+
+	return ret;
 }
 
 // Blit to screen

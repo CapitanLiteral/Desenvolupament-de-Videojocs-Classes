@@ -37,8 +37,6 @@ public:
 
 	unsigned int Save(const char* file, const char* buffer, unsigned int size) const;
 
-	bool deleteFile(const char* filename);
-
 private:
 
 };

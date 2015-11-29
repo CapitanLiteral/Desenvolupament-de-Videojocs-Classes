@@ -4,6 +4,8 @@
 #include "j1Module.h"
 
 struct SDL_Texture;
+class GuiImage;
+class GuiText;
 
 class j1Scene : public j1Module
 {
@@ -15,7 +17,7 @@ public:
 	virtual ~j1Scene();
 
 	// Called before render is available
-	bool Awake(pugi::xml_node& config);
+	bool Awake();
 
 	// Called before the first frame
 	bool Start();
@@ -32,17 +34,10 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	//Save/Load
-	bool Load(pugi::xml_node&);
-	bool Save(pugi::xml_node&) const;
-
 private:
-
-	float player_x;
-	float player_y;
 	SDL_Texture* debug_tex;
-	int camera_speed_x, camera_speed_y;
-	p2SString map;
+	GuiImage* banner;
+	GuiText* text;
 };
 
 #endif // __j1SCENE_H__

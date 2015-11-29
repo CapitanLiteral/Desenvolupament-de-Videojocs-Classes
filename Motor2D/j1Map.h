@@ -3,7 +3,6 @@
 
 #include "PugiXml/src/pugixml.hpp"
 #include "p2List.h"
-#include "p2SString.h"
 #include "p2Point.h"
 #include "j1Module.h"
 
@@ -21,7 +20,7 @@ struct Properties
 		p2List_item<Property*>* item;
 		item = list.start;
 
-		while (item != NULL)
+		while(item != NULL)
 		{
 			RELEASE(item->data);
 			item = item->next;
@@ -34,6 +33,7 @@ struct Properties
 
 	p2List<Property*>	list;
 };
+
 // ----------------------------------------------------
 struct MapLayer
 {

@@ -17,6 +17,8 @@ class j1FileSystem;
 class j1Scene;
 class j1Map;
 class j1PathFinding;
+class j1Fonts;
+class j1Gui;
 
 class j1App
 {
@@ -48,6 +50,7 @@ public:
 	const char* GetArgv(int index) const;
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
+	float GetDT() const;
 
 	void LoadGame(const char* file);
 	void SaveGame(const char* file) const;
@@ -89,6 +92,8 @@ public:
 	j1FileSystem*		fs = NULL;
 	j1Map*				map = NULL;
 	j1PathFinding*		pathfinding = NULL;
+	j1Fonts*			font = NULL;
+	j1Gui*				gui = NULL;
 
 private:
 
@@ -111,7 +116,8 @@ private:
 	j1Timer				last_sec_frame_time;
 	uint32				last_sec_frame_count = 0;
 	uint32				prev_last_sec_frame_count = 0;
-	float				dt = 0;
+	float				dt = 0.0f;
+	int					capped_ms = -1;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S
