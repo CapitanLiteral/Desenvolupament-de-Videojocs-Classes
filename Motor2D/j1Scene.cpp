@@ -50,6 +50,8 @@ bool j1Scene::Start()
 
 	text = App->gui->CreateText(iPoint(200, 150), "Hello world");
 
+	button = App->gui->CreateButton(iPoint(200, 150), iPoint(200, 200), this);
+
 	return true;
 }
 
@@ -145,9 +147,6 @@ bool j1Scene::PostUpdate()
 {
 	bool ret = true;
 
-	banner->Gui_Draw();
-	text->Gui_Draw();
-
 	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
@@ -160,4 +159,30 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 
 	return true;
+}
+
+
+void j1Scene::On_Gui_Action(UI_Unit* button, int action)
+{
+	switch (action)
+	{
+		case UI_Events::mouse_enter:
+			text->SetText("Inside!");
+			break;
+		case UI_Events::mouse_out:
+			text->SetText("Bye!");
+			break;
+		case UI_Events::mouseL_click:
+			text->SetText("Left Click!");
+			break;
+		case UI_Events::mouseR_click:
+			text->SetText("Right Click!");
+			break;
+		/*case GuiEvents::gain_focus:
+			text->SetText("Text gained focus");
+			break;
+		case GuiEvents::lost_focus:
+			text->SetText("Text lost focus");
+			break;*/
+	}
 }

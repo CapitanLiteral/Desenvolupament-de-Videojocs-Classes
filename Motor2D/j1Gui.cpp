@@ -38,6 +38,13 @@ bool j1Gui::Start()
 // Update all guis
 bool j1Gui::PreUpdate()
 {
+	p2List_item<UI_Unit*>* tmp = ui_elements.start;
+
+	for (; tmp; tmp = tmp->next)
+	{
+		tmp->data->Update();
+	}
+
 	return true;
 }
 
@@ -119,6 +126,15 @@ UI_Text* j1Gui::CreateText(const iPoint& pos, const char* text)
 	return ret;
 }
 
+UI_Button* j1Gui::CreateButton(const iPoint& pos, const iPoint& size, j1Module* listernner)
+{
+	UI_Button* ret = new UI_Button(pos, size, listernner);
+
+	ui_elements.add(ret);
+
+	return ret;
+}
+
 bool j1Gui::Delete(UI_Unit* elem)
 {
 	p2List_item<UI_Unit*>* tmp = ui_elements.At(ui_elements.find(elem));
@@ -151,7 +167,8 @@ void UI_Unit::SetPosition(int x, int y)
 
 void UI_Unit::Draw()const
 {
-	//Gui_Draw();
+	Gui_Draw();
+	Gui_Draw_Debug();
 }
 
 //-----------------------------------------------
@@ -173,6 +190,11 @@ UI_Image::~UI_Image()
 void UI_Image::Gui_Draw()const
 {
 	App->render->Blit(image, position.x, position.y, &section);
+}
+
+void UI_Unit::SetParent(UI_Unit* _parent)
+{
+	this->parent = _parent;
 }
 
 //-----------------------------------------------
@@ -198,3 +220,66 @@ void UI_Text::Gui_Draw()const
 {
 	App->render->Blit(text_texture, position.x, position.y);
 }
+
+//-----------------------------------------------
+//-------UI_Button-------------------------------
+//-----------------------------------------------
+
+UI_Button::UI_Button(const iPoint& pos, const iPoint& size, j1Module* module) : UI_Unit(pos), size(size), listener(module), mouse_over(false)
+{}
+
+UI_Button::~UI_Button()
+{}
+
+void UI_Button::Update()
+{
+	iPoint pos = GetPos();
+	iPoint mouse_pos;
+	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+
+	bool over = false;
+	if ((mouse_pos.x > pos.x) && (mouse_pos.x < (pos.x + size.x)) && (mouse_pos.y > pos.y) && (mouse_pos.y < (pos.y + size.y)))
+		over = true;
+	else
+		over = false;
+
+	if (over != mouse_over)
+	{
+		mouse_over = over;
+		if (over == true)
+		{
+			listener->On_Gui_Action(this, mouse_enter);
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+				listener->On_Gui_Action(this, mouseL_click);
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+				listener->On_Gui_Action(this, mouseR_click);
+		}
+		else
+			listener->On_Gui_Action(this, mouse_out);
+	}
+}
+
+void UI_Button::Gui_Draw_Debug()const
+{
+	App->render->DrawQuad({ position.x, position.y, size.x, size.y }, 255, 0, 0, 100, true, false);
+}
+
+//-----------------------------------------------
+//-------UI_Input--------------------------------
+//-----------------------------------------------
+
+/*UI_Input::UI_Input(const iPoint& pos, const iPoint& size) : UI_Unit(pos), size(size)
+{}
+
+UI_Input::~UI_Input()
+{}
+
+void UI_Input::Gui_Draw_Debug()const
+{
+
+}
+
+void UI_Input::Update()
+{
+
+}*/

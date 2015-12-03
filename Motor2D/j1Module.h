@@ -10,6 +10,7 @@
 #include "PugiXml\src\pugixml.hpp"
 
 class j1App;
+class UI_Unit;
 
 class j1Module
 {
@@ -70,6 +71,11 @@ public:
 	virtual bool Save(pugi::xml_node&) const
 	{
 		return true;
+	}
+
+	virtual void On_Gui_Action(UI_Unit* button, int action)
+	{
+
 	}
 
 public:
