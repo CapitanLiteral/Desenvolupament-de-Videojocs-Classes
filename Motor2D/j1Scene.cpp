@@ -32,8 +32,6 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	SDL_Texture* atlas = App->tex->Load("gui/atlas.png");
-
 	if(App->map->Load("iso_walk.tmx") == true)
 	{
 		int w, h;
@@ -47,9 +45,11 @@ bool j1Scene::Start()
 	debug_tex = App->tex->Load("maps/path2.png");
 
 	// TODO 3: Create the image (rect {485, 829, 328, 103}) and the text "Hello World" as UI elements
-	banner = App->gui->CreateImage(iPoint(485, 829), iPoint(328, 103), atlas);
+	SDL_Rect r{ 485, 829, 328, 103 };
+	banner = App->gui->CreateImage(iPoint(200, 200), r);
 
-	delete atlas;
+	text = App->gui->CreateText(iPoint(200, 150), "Hello world");
+
 	return true;
 }
 
@@ -144,6 +144,9 @@ bool j1Scene::Update(float dt)
 bool j1Scene::PostUpdate()
 {
 	bool ret = true;
+
+	banner->Gui_Draw();
+	text->Gui_Draw();
 
 	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;

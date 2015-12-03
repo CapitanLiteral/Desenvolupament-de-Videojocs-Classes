@@ -22,7 +22,6 @@ bool j1Gui::Awake(pugi::xml_node& conf)
 	LOG("Loading GUI atlas");
 	bool ret = true;
 
-	next_id = 0;
 	atlas_file_name = conf.child("atlas").attribute("file").as_string("");
 
 	return ret;
@@ -45,6 +44,13 @@ bool j1Gui::PreUpdate()
 // Called after all Updates
 bool j1Gui::PostUpdate()
 {
+	p2List_item<UI_Unit*>* tmp = ui_elements.start;
+
+	for (; tmp; tmp = tmp->next)
+	{
+		tmp->data->Draw();
+	}
+
 	return true;
 }
 
@@ -53,13 +59,13 @@ bool j1Gui::CleanUp()
 {
 	LOG("Freeing GUI");
 
-	p2List_item<UI_Image*>* Itmp = image_units.start;
-	while (Itmp)
+	p2List_item<UI_Unit*>* tmp = ui_elements.start;
+	while (tmp)
 	{
-		delete Itmp->data;
-		Itmp = Itmp->next;
+		delete tmp->data;
+		tmp = tmp->next;
 	}
-	image_units.clear();
+	ui_elements.clear();
 
 	return true;
 }
@@ -73,33 +79,51 @@ const SDL_Texture* j1Gui::GetAtlas() const
 // class Gui ---------------------------------------------------
 
 //--------------------------------------------------------------
-UI_Image* j1Gui::CreateImage(const iPoint& p, const iPoint& s)
+UI_Image* j1Gui::CreateImage(const iPoint& pos)
 {
-	UI_Image* ret = new UI_Image(p, s);
+	UI_Image* ret = new UI_Image(pos, atlas);
 	
-	ret->id = next_id;
-	next_id++;
-	image_units.add(ret);
+	ui_elements.add(ret);
 
 	return ret;
 }
 
-UI_Image* j1Gui::CreateImage(const iPoint& p, const iPoint& s, SDL_Texture* img)
+UI_Image* j1Gui::CreateImage(const iPoint& pos, SDL_Rect sec)
 {
-	UI_Image* ret = new UI_Image(p, s, img);
+	UI_Image* ret = new UI_Image(pos, sec, atlas);
 
-	ret->id = next_id;
-	next_id++;
-	image_units.add(ret);
+	ui_elements.add(ret);
 
 	return ret;
 }
 
-bool j1Gui::Delete(UI_Image* img)
+UI_Image* j1Gui::CreateImage(const iPoint& pos, SDL_Rect sec, const char* filename)
 {
-	p2List_item<UI_Image*>* tmp = image_units.At(image_units.find(img));
+	UI_Image* ret = NULL;
+	SDL_Texture* tex = App->tex->Load(filename);
 
-	if (image_units.del(tmp))
+	if (tex != NULL)
+	{
+		ret = new UI_Image(pos, sec, tex);
+		ui_elements.add(ret);
+	}
+	return ret;
+}
+
+UI_Text* j1Gui::CreateText(const iPoint& pos, const char* text)
+{
+	UI_Text* ret = new UI_Text(pos, text);
+
+	ui_elements.add(ret);
+
+	return ret;
+}
+
+bool j1Gui::Delete(UI_Unit* elem)
+{
+	p2List_item<UI_Unit*>* tmp = ui_elements.At(ui_elements.find(elem));
+
+	if (ui_elements.del(tmp))
 		return true;
 	else
 		return false;
@@ -109,29 +133,68 @@ bool j1Gui::Delete(UI_Image* img)
 //-----------------------------------------------
 //-------UI_Unit---------------------------------
 //-----------------------------------------------
-UI_Unit::UI_Unit(const iPoint& p, const iPoint& s) : pos(p), size(s)
+UI_Unit::UI_Unit(const iPoint& p) : position(p)
 {}
 
 UI_Unit::~UI_Unit()
 {}
 
+iPoint UI_Unit::GetPos()const
+{
+	return position;
+}
+void UI_Unit::SetPosition(int x, int y)
+{
+	position.x = x;
+	position.y = y;
+}
+
+void UI_Unit::Draw()const
+{
+	//Gui_Draw();
+}
+
 //-----------------------------------------------
 //-------UI_Image--------------------------------
 //-----------------------------------------------
 
-UI_Image::UI_Image(const iPoint& p, const iPoint& s) : UI_Unit(p, s), image(NULL)
-{}
+UI_Image::UI_Image(const iPoint& pos, SDL_Texture* img) : UI_Unit(pos), image(img)
+{
+	section.x = section.y = 0;
+	App->tex->GetSize(image, (uint&) section.x, (uint&)section.y);
+}
 
-UI_Image::UI_Image(const iPoint& p, const iPoint& s, SDL_Texture* img) : UI_Unit(p, s), image(img)
+UI_Image::UI_Image(const iPoint& pos, SDL_Rect sec, SDL_Texture* img) : UI_Unit(pos), section(sec), image(img)
 {}
 
 UI_Image::~UI_Image()
 {}
 
-void UI_Image::Print()
+void UI_Image::Gui_Draw()const
 {
-	SDL_Rect sect;
-	sect.x = size.x;
-	sect.y = size.y;
-	App->render->Blit(image, pos.x, pos.y, &sect);
+	App->render->Blit(image, position.x, position.y, &section);
+}
+
+//-----------------------------------------------
+//-------UI_Text---------------------------------
+//-----------------------------------------------
+
+UI_Text::UI_Text(const iPoint& pos, const char* text) : UI_Unit(pos)
+{
+	text_texture = App->font->Print(text);
+}
+
+UI_Text::~UI_Text()
+{}
+
+void UI_Text::SetText(const char* text)
+{
+	if (text_texture != NULL)
+		SDL_DestroyTexture(text_texture);
+	text_texture = App->font->Print(text);
+}
+
+void UI_Text::Gui_Draw()const
+{
+	App->render->Blit(text_texture, position.x, position.y);
 }

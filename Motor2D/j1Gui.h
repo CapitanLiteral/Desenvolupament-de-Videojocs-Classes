@@ -10,32 +10,47 @@
 class UI_Unit
 {
 public:
-	iPoint pos;
-	iPoint size;
-	int id;
+	iPoint position;
 
 public:
-	UI_Unit(const iPoint& p, const iPoint& s);
+	UI_Unit(const iPoint& pos);
 	virtual ~UI_Unit();
+
+	iPoint GetPos()const;
+	void SetPosition(int x, int y);
+	void Draw()const;
+
+//protected:
+	//virtual void Gui_Draw()const;
 };
 
 class UI_Image : public UI_Unit
 {
-public:
+private:
 	SDL_Texture* image;
+	SDL_Rect section;
 
 public:
-	UI_Image(const iPoint& p, const iPoint& s);
-	UI_Image(const iPoint& p, const iPoint& s, SDL_Texture* img);
+	UI_Image(const iPoint& pos, SDL_Texture* img);
+	UI_Image(const iPoint& pos, SDL_Rect sec, SDL_Texture* img);
 	~UI_Image();
 
-	void Print();
+//protected:
+	void Gui_Draw()const;
 };
 
 
-class UI_Labbel : public UI_Unit
+class UI_Text : public UI_Unit
 {
+public:
+	UI_Text(const iPoint& pos, const char* text);
+	virtual ~UI_Text();
 
+	void SetText(const char* text);
+	void Gui_Draw()const;
+
+private:
+	SDL_Texture* text_texture;
 };
 // ---------------------------------------------------
 
@@ -68,14 +83,17 @@ public:
 
 	const SDL_Texture* GetAtlas() const;
 
-	UI_Image* CreateImage(const iPoint& p, const iPoint& s);
-	UI_Image* CreateImage(const iPoint& p, const iPoint& s, SDL_Texture* img);
+	UI_Image* CreateImage(const iPoint& pos);
+	UI_Image* CreateImage(const iPoint& pos, SDL_Rect sec);
+	UI_Image* CreateImage(const iPoint& pos, SDL_Rect sec, const char* filename);
 
-	bool Delete(UI_Image* img);
+	UI_Text* CreateText(const iPoint& pos, const char* text);
+
+	bool Delete(UI_Unit* img);
 
 private:
-	p2List<UI_Image*> image_units;
-	int next_id;
+	p2List<UI_Unit*> ui_elements;
+
 	SDL_Texture* atlas;
 	p2SString atlas_file_name;
 };
