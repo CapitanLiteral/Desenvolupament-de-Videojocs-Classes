@@ -6,6 +6,7 @@
 struct SDL_Texture;
 class GuiImage;
 class GuiLoadBar;
+class GuiLabel;
 
 class j1Scene : public j1Module
 {
@@ -44,8 +45,10 @@ private:
 	iPoint mouse_pos;
 	GuiLoadBar* bar;
 	Gui* window;
+	GuiLabel* life_ammount;
 
-	float life = 100.0f;
+	int life = 100;
+	char lifes[4];
 };
 
 #endif // __j1SCENE_H__

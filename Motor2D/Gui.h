@@ -134,20 +134,20 @@ private:
 class GuiLoadBar : public Gui
 {
 public:
-	GuiLoadBar(float value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect);
+	GuiLoadBar(int value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect);
 	~GuiLoadBar();
 
 	void Update();
 	void Draw()const;
-	void SetBar(float actual_value);
+	void SetBar(int actual_value);
 
 public:
 	GuiImage bar;
 	GuiImage cover;
 private:
 	iPoint bar_size;
-	float value;	//How much the hole bar represents
-	float actual_value;		//How much the bar each iteration must represent
+	int value;	//How much the hole bar represents
+	int actual_value;		//How much the bar each iteration must represent
 	rectangle bar_section;
 };
 

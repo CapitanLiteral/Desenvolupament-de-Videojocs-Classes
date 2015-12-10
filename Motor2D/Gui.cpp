@@ -334,7 +334,7 @@ void GuiInputText::Draw() const
 	}
 }
 
-GuiLoadBar::GuiLoadBar(float value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect) :
+GuiLoadBar::GuiLoadBar(int value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect) :
 value(value), bar(texture, bar_sect), cover(texture, cover_sect), bar_section(bar_sect), actual_value(value)
 {
 	type = GuiTypes::load_bar;
@@ -349,7 +349,7 @@ GuiLoadBar::~GuiLoadBar()
 {
 }
 
-void GuiLoadBar::SetBar(float _value)
+void GuiLoadBar::SetBar(int _value)
 {
 	actual_value = _value;
 }

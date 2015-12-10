@@ -169,7 +169,73 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 {
 	int ret = -1;
 
-	// Nice try :)
+	int iterations = 0;
+
+	if (IsWalkable(origin) && IsWalkable(destination))
+	{
+		PathList open;
+		PathList closed;
+		PathList adjacent;
+
+		// Start pushing the origin in the open list
+		open.list.add(PathNode(0, 0, origin, NULL));
+
+		// Iterate while we have open destinations to visit
+		do
+		{
+			// Move the lowest score cell from open list to the closed list
+			p2List_item<PathNode>* lowest = open.GetNodeLowestScore();
+			p2List_item<PathNode>* node = closed.list.add(lowest->data);
+			open.list.del(lowest);
+
+			// If destination was added, we are done!
+			if (node->data.pos == destination)
+			{
+				last_path.Clear();
+				// Backtrack to create the final path
+				const PathNode* path_node = &node->data;
+
+				while (path_node)
+				{
+					last_path.PushBack(path_node->pos);
+					path_node = path_node->parent;
+				}
+
+				last_path.Flip();
+				ret = last_path.Count();
+				LOG("Created path of %d steps in %d iterations", ret, iterations);
+				break;
+			}
+
+			// Fill a list with all adjacent nodes
+			adjacent.list.clear();
+			node->data.FindWalkableAdjacents(adjacent);
+
+			p2List_item<PathNode>* item = adjacent.list.start;
+			for (; item; item = item->next)
+			{
+				if (closed.Find(item->data.pos) != NULL)
+					continue;
+
+				p2List_item<PathNode>* adjacent_in_open = open.Find(item->data.pos);
+				if (adjacent_in_open == NULL)
+				{
+					item->data.CalculateF(destination);
+					open.list.add(item->data);
+				}
+				else
+				{
+					if (adjacent_in_open->data.g > item->data.g + 1)
+					{
+						adjacent_in_open->data.parent = item->data.parent;
+						adjacent_in_open->data.CalculateF(destination);
+					}
+				}
+			}
+
+			++iterations;
+		} while (open.list.count() > 0);
+	}
 
 	return ret;
 }
