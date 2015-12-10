@@ -79,6 +79,8 @@ bool j1Input::PreUpdate()
 			mouse_buttons[i] = KEY_IDLE;
 	}
 
+	mouse_motion_x = mouse_motion_y = 0;
+
 	while(SDL_PollEvent(&event) != 0)
 	{
 		switch(event.type)
@@ -107,6 +109,66 @@ bool j1Input::PreUpdate()
 				}
 			break;
 
+
+			case SDL_KEYDOWN:
+			{
+				// Special case of micro controlling text input
+				// TODO
+				if(text_input == true)
+				{
+					switch(event.key.keysym.sym)
+					{
+						case SDLK_BACKSPACE:
+						last_text_input.Cut(cursor_text_input - 1, cursor_text_input - 1);
+						if(cursor_text_input > 0)
+							cursor_text_input--;
+						break;
+						case SDLK_DELETE:
+						if(cursor_text_input < last_text_input.Length())
+							last_text_input.Cut(cursor_text_input, cursor_text_input);
+						break;
+						case SDLK_KP_ENTER:
+						case SDLK_RETURN2:
+						case SDLK_RETURN:
+						selection_text_input = 1;
+						break;
+						case SDLK_LEFT:
+						if(cursor_text_input > 0)
+							cursor_text_input--;
+						break;
+						case SDLK_RIGHT:
+						if(cursor_text_input < last_text_input.Length())
+							cursor_text_input++;
+						break;
+						case SDLK_HOME:
+						cursor_text_input = 0;
+						break;
+						case SDLK_END:
+						cursor_text_input = last_text_input.Length();
+						break;
+					}
+				}
+
+				//LOG("Key %d changes state to %d", code, state);
+			}
+			break;
+
+			// TODO 4: Capture SDL_TEXTINPUT event. You can ignore SDL_TEXTEDITING for now
+			// read and store what you receive so you can return it
+			case SDL_TEXTINPUT:
+			last_text_input.Insert(cursor_text_input, event.text.text);
+			cursor_text_input += strlen(event.text.text);
+			LOG("Input event: %s", event.edit.text);
+			break;
+
+			// TODO
+			case SDL_TEXTEDITING:
+			//last_text_input = event.edit.text;
+			//cursor_text_input = event.edit.start;
+			//selection_text_input = event.edit.length;
+			LOG("Edit event: %s cursor %d selection %d", event.edit.text, event.edit.start, event.edit.length);
+			break;
+
 			case SDL_MOUSEBUTTONDOWN:
 				mouse_buttons[event.button.button - 1] = KEY_DOWN;
 				//LOG("Mouse button %d down", event.button.button-1);
@@ -125,6 +187,8 @@ bool j1Input::PreUpdate()
 				mouse_y = event.motion.y / scale;
 				//LOG("Mouse motion x %d y %d", mouse_motion_x, mouse_motion_y);
 			break;
+
+			
 		}
 	}
 
@@ -155,4 +219,28 @@ void j1Input::GetMouseMotion(int& x, int& y)
 {
 	x = mouse_motion_x;
 	y = mouse_motion_y;
+}
+
+// TODO 3: Add method to start / stop / get text from SDL_TextInput
+void j1Input::StartTextInput(SDL_Rect* rect)
+{
+	text_input = true;
+	SDL_StartTextInput();
+
+	if(rect != NULL)
+		SDL_SetTextInputRect(rect);
+}
+
+void j1Input::EndTextInput()
+{
+	SDL_StopTextInput();
+	text_input = false;
+}
+
+const char* j1Input::GetTextInput(int& cursor, int& selection) const
+{
+	cursor = cursor_text_input;
+	selection = selection_text_input;
+
+	return last_text_input.GetString();
 }

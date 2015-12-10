@@ -230,20 +230,17 @@ public:
 		return size;
 	}
 
-	bool Cut(unsigned int begin, unsigned int end = 0)
+	bool Cut(unsigned int begin, unsigned int end)
 	{
 		uint len = Length();
 
-		if(end >= len || end == 0)
+		if(end >= len)
 			end = len - 1;
 
-		if(begin > len || end <= begin)
+		if(begin > len || end < begin)
 			return false;
 
-		char* p1 = str + begin;
-		char* p2 = str + end + 1;
-
-		while(*p1++ = *p2++);
+		memmove(&str[begin], &str[end + 1], len - end);
 
 		return true;
 	}
@@ -347,12 +344,44 @@ public:
 				buffer.Alloc(s);
 				delete[] tmp;
 			}
-			strncpy_s(buffer.str, s, &str[start], s);
+			strncpy_s(buffer.str, buffer.size, &str[start], s);
 			buffer.str[s] = '\0';
 			return(end - start);
 		}
 		else
 			return 0;
+	}
+
+	/**
+	* Convert the string to upper case
+	*/
+	p2SString& Insert(unsigned int position, const char* text)
+	{
+		if(position <= size && text != NULL)
+		{
+			int len = strlen(text);
+			int old_len = Length();
+			char* old_str = str;
+			Alloc(len + old_len + 1);
+
+			memcpy(str, old_str, position);
+			memcpy(&str[position], text, len);
+			memcpy(&str[position + len], &old_str[position], old_len - position + 1);
+			delete[] old_str;
+		}
+		return(*this);
+	}
+
+	void Reserve(uint new_capacity)
+	{
+		if(new_capacity > size)
+		{
+			uint len = Length();
+			char* tmp = str;
+			Alloc(new_capacity);
+			memcpy(str, tmp, len + 1);
+			delete[] tmp;
+		}
 	}
 
 private:

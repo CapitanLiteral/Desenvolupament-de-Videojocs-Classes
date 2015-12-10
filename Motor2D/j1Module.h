@@ -10,7 +10,8 @@
 #include "PugiXml\src\pugixml.hpp"
 
 class j1App;
-class UI_Unit;
+class Gui;
+enum GuiEvents;
 
 class j1Module
 {
@@ -73,10 +74,8 @@ public:
 		return true;
 	}
 
-	virtual void On_Gui_Action(UI_Unit* button, int action)
-	{
-
-	}
+	virtual void OnGui(Gui* ui, GuiEvents event)
+	{}
 
 public:
 

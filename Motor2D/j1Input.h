@@ -2,10 +2,10 @@
 #define __j1INPUT_H__
 
 #include "j1Module.h"
+#include "SDL/include/SDL_scancode.h"
+#include "SDL/include/SDL_mouse.h"
 
-//#define NUM_KEYS 352
 #define NUM_MOUSE_BUTTONS 5
-//#define LAST_KEYS_PRESSED_BUFFER 50
 
 struct SDL_Rect;
 
@@ -61,6 +61,10 @@ public:
 		return mouse_buttons[id - 1];
 	}
 
+	void StartTextInput(SDL_Rect* rect = NULL);
+	void EndTextInput();
+	const char* GetTextInput(int& cursor, int& selection) const;
+
 	// Check if a certain window event happened
 	bool GetWindowEvent(int code);
 
@@ -70,12 +74,17 @@ public:
 
 private:
 	bool		windowEvents[WE_COUNT];
-	j1KeyState*	keyboard;
+	j1KeyState*	keyboard = nullptr;
 	j1KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
-	int			mouse_motion_x;
-	int			mouse_motion_y;
-	int			mouse_x;
-	int			mouse_y;
+	int			mouse_motion_x = 0;
+	int			mouse_motion_y = 0;
+	int			mouse_x = 0;
+	int			mouse_y = 0;
+	// Text Input
+	bool		text_input;
+	p2SString	last_text_input;
+	int			cursor_text_input;
+	int			selection_text_input;
 };
 
 #endif // __j1INPUT_H__

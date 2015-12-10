@@ -10,9 +10,9 @@
     <vsync value="true"/>
   </renderer>
 
-  <font>
-    <default_font file="fonts/open_sans/OpenSans-Regular.ttf" size="12"/>
-  </font>
+  <fonts>
+    <default_font file="fonts/open_sans/OpenSans-Regular.ttf" size="24"/>
+  </fonts>
 
   <gui>
     <atlas file="gui/atlas.png"/>

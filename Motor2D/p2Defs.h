@@ -48,6 +48,11 @@ template <class VALUE_TYPE> void SWAP(VALUE_TYPE& a, VALUE_TYPE& b)
 	b = tmp;
 }
 
+struct rectangle
+{
+	int x, y, w, h;
+};
+
 // Standard string size
 #define SHORT_STR	32
 #define MID_STR		255

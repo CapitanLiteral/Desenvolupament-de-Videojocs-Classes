@@ -4,9 +4,8 @@
 #include "j1Module.h"
 
 struct SDL_Texture;
-class UI_Image;
-class UI_Text;
-class UI_Button;
+class GuiImage;
+class GuiLoadBar;
 
 class j1Scene : public j1Module
 {
@@ -35,14 +34,18 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// Called when UI event is raised
+	void OnGui(Gui* ui, GuiEvents event);
+
 private:
 	SDL_Texture* debug_tex;
-	UI_Image* banner;
-	UI_Text* text;
-	UI_Button* button;
+	GuiImage* button;
+	GuiImage* mouse_cursor;
+	iPoint mouse_pos;
+	GuiLoadBar* bar;
+	Gui* window;
 
-public:
-	void On_Gui_Action(UI_Unit* button, int action);
+	float life = 100.0f;
 };
 
 #endif // __j1SCENE_H__

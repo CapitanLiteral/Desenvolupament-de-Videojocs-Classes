@@ -152,6 +152,27 @@ public:
 	}
 
 	/**
+	* Move item on position "from" to position "to"
+	*/
+	bool relocate(unsigned int from, unsigned int to)
+	{
+		bool ret = true;
+
+		if(from != to)
+		{
+			p2List_item<tdata>* f = At(from);
+			p2List_item<tdata>* t = At(to);
+
+			if(f && t)
+				SWAP(f->data, t->data);
+			else
+				ret = false;
+		}
+
+		return ret;
+	}
+
+	/**
 	* read / write operator access directly to a position in the list
 	*/
 	tdata& operator  [](const unsigned int index)

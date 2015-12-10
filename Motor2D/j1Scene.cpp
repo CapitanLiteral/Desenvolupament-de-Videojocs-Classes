@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1PathFinding.h"
 #include "j1Gui.h"
+#include "Gui.h"
 #include "j1Scene.h"
 
 j1Scene::j1Scene() : j1Module()
@@ -43,14 +44,46 @@ bool j1Scene::Start()
 	}
 
 	debug_tex = App->tex->Load("maps/path2.png");
+	window = App->gui->CreateImage({0, 512, 483, 512});
+	window->Center();
+	window->draggable = true;
+	window->interactive = true;
+	window->cut_childs = false;
 
-	// TODO 3: Create the image (rect {485, 829, 328, 103}) and the text "Hello World" as UI elements
-	SDL_Rect r{ 485, 829, 328, 103 };
-	banner = App->gui->CreateImage(iPoint(200, 200), r);
+	Gui* input = App->gui->CreateInput({488, 569, 344, 61}, "Your name", 315, {-13,-14});
+	input->SetParent(window);
+	input->interactive = true;
+	input->Center();
+	input->SetLocalPos(input->GetLocalPos().x, 150);
+	input->can_focus = true;
 
-	text = App->gui->CreateText(iPoint(200, 150), "Hello world");
+	button = App->gui->CreateImage({642, 169, 229, 69});
+	button->SetListener(this);
+	button->interactive = true;
+	button->can_focus = true;
+	
+	Gui* text = App->gui->CreateLabel("Button");
 
-	button = App->gui->CreateButton(iPoint(200, 150), iPoint(200, 200), this);
+	text->SetParent(button);
+	button->SetParent(window);
+
+	text->Center();
+	button->Center();
+
+	Gui* title = App->gui->CreateLabel("Window Title");
+	title->SetParent(window);
+	title->Center();
+	iPoint p = title->GetLocalPos();
+	title->SetLocalPos(p.x, 50);
+
+	mouse_cursor = App->gui->CreateImage("curs.png");
+	mouse_cursor->SetSection(rectangle{ 6, 0, 22, 32 });
+	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
+
+	bar = App->gui->CreateBar(100.0f, rectangle{ 0, 276, 858, 37 }, rectangle{ 28, 430, 875, 49 });
+	bar->SetLocalPos(10, 10);
+	bar->bar.SetLocalPos(7, 5);
 
 	return true;
 }
@@ -58,6 +91,7 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
+	SDL_ShowCursor(SDL_DISABLE);
 
 	// debug pathfing ------------------
 	static iPoint origin;
@@ -81,6 +115,9 @@ bool j1Scene::PreUpdate()
 			origin_selected = true;
 		}
 	}
+
+	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
 
 	return true;
 }
@@ -108,6 +145,45 @@ bool j1Scene::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 		App->render->camera.x -= floor(200.0f * dt);
+
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	{
+		App->gui->DeleteGuiElement(button);
+		button = NULL;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+	{
+		if (window)
+		{
+			if(window->active == true)
+				App->gui->DisableGuiElement(window);
+			else
+				App->gui->EnableGuiElement(window);
+		}	
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	{
+		if (life > 0.0f)
+		{
+			life -= 10.0f;
+		}
+		else
+			life = 0.0f;
+		bar->SetBar(life);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	{
+		if (life < 100.0f)
+		{
+			life += 10.0f;
+		}
+		else
+			life = 100.0f;
+		bar->SetBar(life);
+	}
 
 	App->map->Draw();
 
@@ -161,28 +237,43 @@ bool j1Scene::CleanUp()
 	return true;
 }
 
-
-void j1Scene::On_Gui_Action(UI_Unit* button, int action)
+// Called when UI event is raised
+void j1Scene::OnGui(Gui* ui, GuiEvents event)
 {
-	switch (action)
+
+/*Normal Button coords are {0,111,229,69} - hover state
+Bright Button coords are {410,169,229,69} - click state
+Dark Button coords are {645,165,229,69} - normal state
+*/
+	if(ui == button)
 	{
-		case UI_Events::mouse_enter:
-			text->SetText("Inside!");
+		switch(event)
+		{
+			case GuiEvents::mouse_enters:
+			case GuiEvents::gain_focus:
+			button->SetSection(rectangle{0,113,229,69});
 			break;
-		case UI_Events::mouse_out:
-			text->SetText("Bye!");
+
+			case GuiEvents::mouse_leaves:
+			case GuiEvents::lost_focus:
+				button->SetSection(rectangle{ 642, 169, 229, 69 });
 			break;
-		case UI_Events::mouseL_click:
-			text->SetText("Left Click!");
+
+			case GuiEvents::mouse_lclick_down:
+				button->SetSection(rectangle{ 411, 169, 229, 69 });
 			break;
-		case UI_Events::mouseR_click:
-			text->SetText("Right Click!");
+
+			case GuiEvents::mouse_lclick_up :
+				button->SetSection(rectangle{ 0, 113, 229, 69 });
 			break;
-		/*case GuiEvents::gain_focus:
-			text->SetText("Text gained focus");
+
+			case GuiEvents::mouse_rclick_down:
+				button->SetSection(rectangle{ 411, 169, 229, 69 });
 			break;
-		case GuiEvents::lost_focus:
-			text->SetText("Text lost focus");
-			break;*/
+
+			case GuiEvents::mouse_rclick_up:
+				button->SetSection(rectangle{ 0, 113, 229, 69 });
+			break;
+		}
 	}
 }

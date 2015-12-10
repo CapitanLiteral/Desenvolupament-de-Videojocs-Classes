@@ -1,15 +1,15 @@
 #include "p2Defs.h"
 #include "p2Log.h"
 #include "j1App.h"
-#include "j1Render.h"
 #include "j1Textures.h"
-#include "j1Fonts.h"
-#include "j1Input.h"
 #include "j1Gui.h"
+#include "j1Input.h"
+#include "Gui.h"
 
 j1Gui::j1Gui() : j1Module()
 {
 	name.create("gui");
+	//debug = true;
 }
 
 // Destructor
@@ -38,24 +38,94 @@ bool j1Gui::Start()
 // Update all guis
 bool j1Gui::PreUpdate()
 {
-	p2List_item<UI_Unit*>* tmp = ui_elements.start;
+	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+		debug = !debug;
 
-	for (; tmp; tmp = tmp->next)
+	const Gui* mouse_hover = FindMouseHover();
+	if(mouse_hover && 
+	   mouse_hover->can_focus == true && 
+	   App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == j1KeyState::KEY_DOWN)
+		focus = mouse_hover;
+
+	p2List_item<Gui*>* item;
+
+	// if TAB find the next item and give it the focus
+	if(App->input->GetKey(SDL_SCANCODE_TAB) == j1KeyState::KEY_DOWN)
 	{
-		tmp->data->Update();
+		int pos = elements.find((Gui*) focus);
+		if(pos > 0)
+		{
+			focus = nullptr;
+			item = elements.At(pos);
+			if(item)
+				item = item->next;
+			for(item; item; item = item->next )
+				if (item->data->can_focus == true && item->data->active == true)
+				{
+					focus = item->data;
+					break;
+				}
+		}
+		if(focus == nullptr)
+		{
+			for(item = elements.start; item; item = item->next)
+				if (item->data->can_focus == true && item->data->active == true)
+				{
+					focus = item->data;
+					break;
+				}
+		}
 	}
+
+	// Now the iteration for input and update
+	for(item = elements.start; item; item = item->next)
+		if (item->data->interactive == true && item->data->active == true)
+			item->data->CheckInput(mouse_hover, focus);
+
+	for(item = elements.start; item; item = item->next)
+		if (item->data->active == true)
+		{
+			item->data->Update(mouse_hover, focus);
+			item->data->Update();
+		}
 
 	return true;
 }
 
 // Called after all Updates
+const Gui* j1Gui::FindMouseHover() const
+{
+	iPoint mouse;
+	App->input->GetMousePosition(mouse.x, mouse.y);
+
+	rectangle r;
+	for(p2List_item<Gui*>* item = elements.end; item; item = item->prev)
+	{
+		if (item->data->interactive == true && item->data->active == true)
+		{
+			r = item->data->GetScreenRect();
+			if((mouse.x >= r.x) && (mouse.x < (r.x + r.w)) &&
+			   (mouse.y >= r.y) && (mouse.y < (r.y + r.h)))
+			   return item->data;
+		}
+	}
+
+	return nullptr;
+}
+
+// Called after all Updates
 bool j1Gui::PostUpdate()
 {
-	p2List_item<UI_Unit*>* tmp = ui_elements.start;
+	p2List_item<Gui*>* item;
 
-	for (; tmp; tmp = tmp->next)
+	for(item = elements.start; item; item = item->next)
 	{
-		tmp->data->Draw();
+		if (item->data->active == true)
+		{
+			item->data->Draw();
+			if (debug == true)
+				item->data->DebugDraw();
+		}
 	}
 
 	return true;
@@ -66,15 +136,74 @@ bool j1Gui::CleanUp()
 {
 	LOG("Freeing GUI");
 
-	p2List_item<UI_Unit*>* tmp = ui_elements.start;
-	while (tmp)
-	{
-		delete tmp->data;
-		tmp = tmp->next;
-	}
-	ui_elements.clear();
+	p2List_item<Gui*>* item;
+
+	for(item = elements.start; item; item = item->next)
+		RELEASE(item->data);
+
+	elements.clear();
 
 	return true;
+}
+
+// Create a simple image
+GuiImage* j1Gui::CreateImage(const char* filename)
+{
+	GuiImage* ret = NULL;
+	SDL_Texture* texture = App->tex->Load(filename);
+
+	if(texture != NULL)
+	{
+		ret = new GuiImage(texture);
+		elements.add(ret);
+	}
+
+	return ret;
+}
+
+// Create a simple image
+GuiImage* j1Gui::CreateImage(const rectangle& section)
+{
+	GuiImage* ret = NULL;
+
+	ret = new GuiImage(atlas, section);
+	elements.add(ret);
+
+	return ret;
+}
+
+// Create a simple image
+GuiLabel* j1Gui::CreateLabel(const char* text)
+{
+	GuiLabel* ret = NULL;
+
+	if(text != NULL)
+	{
+		ret = new GuiLabel(text);
+		elements.add(ret);
+	}
+
+	return ret;
+}
+
+GuiInputText* j1Gui::CreateInput(const rectangle& section, const char* default_text, uint width, const iPoint& offset)
+{
+	GuiInputText* ret = NULL;
+
+	ret = new GuiInputText(default_text, width, atlas, section, offset);
+	elements.add(ret);
+
+	return ret;
+}
+
+GuiLoadBar* j1Gui::CreateBar(float value, const rectangle& bar_sect, const rectangle& cover_sect)
+{
+	GuiLoadBar* ret = NULL;
+
+	ret = new GuiLoadBar(value, atlas, bar_sect, cover_sect);
+	elements.add(ret);
+
+	return ret;
 }
 
 // const getter for atlas
@@ -83,203 +212,54 @@ const SDL_Texture* j1Gui::GetAtlas() const
 	return atlas;
 }
 
-// class Gui ---------------------------------------------------
-
-//--------------------------------------------------------------
-UI_Image* j1Gui::CreateImage(const iPoint& pos)
+void j1Gui::DisableGuiElement(Gui* elem)
 {
-	UI_Image* ret = new UI_Image(pos, atlas);
-	
-	ui_elements.add(ret);
-
-	return ret;
-}
-
-UI_Image* j1Gui::CreateImage(const iPoint& pos, SDL_Rect sec)
-{
-	UI_Image* ret = new UI_Image(pos, sec, atlas);
-
-	ui_elements.add(ret);
-
-	return ret;
-}
-
-UI_Image* j1Gui::CreateImage(const iPoint& pos, SDL_Rect sec, const char* filename)
-{
-	UI_Image* ret = NULL;
-	SDL_Texture* tex = App->tex->Load(filename);
-
-	if (tex != NULL)
+	if (elem != NULL)
 	{
-		ret = new UI_Image(pos, sec, tex);
-		ui_elements.add(ret);
-	}
-	return ret;
-}
-
-UI_Text* j1Gui::CreateText(const iPoint& pos, const char* text)
-{
-	UI_Text* ret = new UI_Text(pos, text);
-
-	ui_elements.add(ret);
-
-	return ret;
-}
-
-UI_Button* j1Gui::CreateButton(const iPoint& pos, const iPoint& size, j1Module* listernner)
-{
-	UI_Button* ret = new UI_Button(pos, size, listernner);
-
-	ui_elements.add(ret);
-
-	return ret;
-}
-
-bool j1Gui::Delete(UI_Unit* elem)
-{
-	p2List_item<UI_Unit*>* tmp = ui_elements.At(ui_elements.find(elem));
-
-	if (ui_elements.del(tmp))
-		return true;
-	else
-		return false;
-}
-
-
-//-----------------------------------------------
-//-------UI_Unit---------------------------------
-//-----------------------------------------------
-UI_Unit::UI_Unit(const iPoint& p) : position(p)
-{}
-
-UI_Unit::~UI_Unit()
-{}
-
-iPoint UI_Unit::GetPos()const
-{
-	return position;
-}
-void UI_Unit::SetPosition(int x, int y)
-{
-	position.x = x;
-	position.y = y;
-}
-
-void UI_Unit::Draw()const
-{
-	Gui_Draw();
-	Gui_Draw_Debug();
-}
-
-//-----------------------------------------------
-//-------UI_Image--------------------------------
-//-----------------------------------------------
-
-UI_Image::UI_Image(const iPoint& pos, SDL_Texture* img) : UI_Unit(pos), image(img)
-{
-	section.x = section.y = 0;
-	App->tex->GetSize(image, (uint&) section.x, (uint&)section.y);
-}
-
-UI_Image::UI_Image(const iPoint& pos, SDL_Rect sec, SDL_Texture* img) : UI_Unit(pos), section(sec), image(img)
-{}
-
-UI_Image::~UI_Image()
-{}
-
-void UI_Image::Gui_Draw()const
-{
-	App->render->Blit(image, position.x, position.y, &section);
-}
-
-void UI_Unit::SetParent(UI_Unit* _parent)
-{
-	this->parent = _parent;
-}
-
-//-----------------------------------------------
-//-------UI_Text---------------------------------
-//-----------------------------------------------
-
-UI_Text::UI_Text(const iPoint& pos, const char* text) : UI_Unit(pos)
-{
-	text_texture = App->font->Print(text);
-}
-
-UI_Text::~UI_Text()
-{}
-
-void UI_Text::SetText(const char* text)
-{
-	if (text_texture != NULL)
-		SDL_DestroyTexture(text_texture);
-	text_texture = App->font->Print(text);
-}
-
-void UI_Text::Gui_Draw()const
-{
-	App->render->Blit(text_texture, position.x, position.y);
-}
-
-//-----------------------------------------------
-//-------UI_Button-------------------------------
-//-----------------------------------------------
-
-UI_Button::UI_Button(const iPoint& pos, const iPoint& size, j1Module* module) : UI_Unit(pos), size(size), listener(module), mouse_over(false)
-{}
-
-UI_Button::~UI_Button()
-{}
-
-void UI_Button::Update()
-{
-	iPoint pos = GetPos();
-	iPoint mouse_pos;
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
-
-	bool over = false;
-	if ((mouse_pos.x > pos.x) && (mouse_pos.x < (pos.x + size.x)) && (mouse_pos.y > pos.y) && (mouse_pos.y < (pos.y + size.y)))
-		over = true;
-	else
-		over = false;
-
-	if (over != mouse_over)
-	{
-		mouse_over = over;
-		if (over == true)
+		if (elem->childs.count() > 0)
 		{
-			listener->On_Gui_Action(this, mouse_enter);
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
-				listener->On_Gui_Action(this, mouseL_click);
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
-				listener->On_Gui_Action(this, mouseR_click);
+			for (p2List_item<Gui*>* i = elem->childs.end; i; i = i->prev)
+			{
+				DisableGuiElement(i->data);
+			}
 		}
-		else
-			listener->On_Gui_Action(this, mouse_out);
+		elem->active = false;
 	}
 }
 
-void UI_Button::Gui_Draw_Debug()const
+void j1Gui::EnableGuiElement(Gui* elem)
 {
-	App->render->DrawQuad({ position.x, position.y, size.x, size.y }, 255, 0, 0, 100, true, false);
+	if (elem != NULL)
+	{
+		if (elem->childs.count() > 0)
+		{
+			for (p2List_item<Gui*>* i = elem->childs.end; i; i = i->prev)
+			{
+				EnableGuiElement(i->data);
+			}
+		}
+		elem->active = true;
+	}
 }
 
-//-----------------------------------------------
-//-------UI_Input--------------------------------
-//-----------------------------------------------
-
-/*UI_Input::UI_Input(const iPoint& pos, const iPoint& size) : UI_Unit(pos), size(size)
-{}
-
-UI_Input::~UI_Input()
-{}
-
-void UI_Input::Gui_Draw_Debug()const
+bool j1Gui::DeleteGuiElement(Gui* elem)
 {
+	bool ret = false;
+	if (elem != NULL)
+	{
+		if (elem->childs.count() > 0)
+		{
+			for (p2List_item<Gui*>* i = elem->childs.end; i; i = i->prev)
+			{
+				DeleteGuiElement(i->data);
+			}
+		}
+		int pos = elements.find(elem);
 
+		p2List_item<Gui*>* tmp = elements.At(pos);
+		RELEASE(tmp->data);
+		if (elements.del(tmp))
+			ret = true;
+	}
+	return ret;
 }
-
-void UI_Input::Update()
-{
-
-}*/
