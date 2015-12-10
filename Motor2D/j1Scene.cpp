@@ -86,7 +86,6 @@ bool j1Scene::Start()
 	bar = App->gui->CreateBar(100.0f, rectangle{ 0, 276, 858, 37 }, rectangle{ 28, 430, 875, 49 });
 	bar->SetParent(window);
 	bar->Center();
-	//bar->SetLocalPos(10, 10);
 	bar->bar.SetLocalPos(bar->cover.GetLocalPos().x + 7, bar->cover.GetLocalPos().y + 5);
 	iPoint p2 = bar->GetLocalPos();
 	bar->SetLocalPos(p2.x, p2.y + 100);
