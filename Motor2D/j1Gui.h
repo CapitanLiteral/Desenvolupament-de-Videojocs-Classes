@@ -57,6 +57,9 @@ private:
 	const Gui* focus = nullptr;
 	SDL_Texture* atlas = nullptr;
 	p2SString atlas_file_name;
+
+	GuiImage* mouse_cursor;
+	iPoint mouse_pos;
 };
 
 #endif // __j1GUI_H__

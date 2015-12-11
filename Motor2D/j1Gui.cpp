@@ -32,6 +32,11 @@ bool j1Gui::Start()
 {
 	atlas = App->tex->Load(atlas_file_name.GetString());
 
+	mouse_cursor = App->gui->CreateImage("curs.png");
+	mouse_cursor->SetSection(rectangle{ 6, 0, 22, 32 });
+	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
+
 	return true;
 }
 
@@ -127,6 +132,10 @@ bool j1Gui::PostUpdate()
 				item->data->DebugDraw();
 		}
 	}
+
+	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
+	mouse_cursor->Draw();
 
 	return true;
 }

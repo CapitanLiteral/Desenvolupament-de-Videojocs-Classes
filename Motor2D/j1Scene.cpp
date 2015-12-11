@@ -84,10 +84,6 @@ bool j1Scene::Start()
 	iPoint p = title->GetLocalPos();
 	title->SetLocalPos(p.x, 50);
 
-	mouse_cursor = App->gui->CreateImage("curs.png");
-	mouse_cursor->SetSection(rectangle{ 6, 0, 22, 32 });
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
-	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
 
 	bar = App->gui->CreateBar(life, rectangle{ 0, 276, 858, 37 }, rectangle{ 28, 430, 875, 49 }, true);
 	bar->SetParent(window);
@@ -221,9 +217,6 @@ bool j1Scene::PostUpdate()
 
 	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
-
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
-	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
 
 	return ret;
 }

@@ -41,8 +41,6 @@ public:
 private:
 	SDL_Texture* debug_tex;
 	GuiImage* button;
-	GuiImage* mouse_cursor;
-	iPoint mouse_pos;
 	GuiLoadBar* bar;
 	Gui* window;
 	GuiLabel* life_ammount;
