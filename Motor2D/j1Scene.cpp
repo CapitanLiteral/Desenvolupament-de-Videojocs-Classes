@@ -58,7 +58,7 @@ bool j1Scene::Start()
 	input->can_focus = true;
 
 	Gui* pass = App->gui->CreateInput({ 488, 569, 344, 61 }, "Your password", 315, { -13, -14 }, true);
-	pass->parent = window;
+	pass->SetParent(window);
 	pass->interactive = true;
 	pass->Center();
 	pass->SetLocalPos(pass->GetLocalPos().x, 250);
