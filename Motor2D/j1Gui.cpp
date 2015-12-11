@@ -186,11 +186,11 @@ GuiLabel* j1Gui::CreateLabel(const char* text)
 	return ret;
 }
 
-GuiInputText* j1Gui::CreateInput(const rectangle& section, const char* default_text, uint width, const iPoint& offset)
+GuiInputText* j1Gui::CreateInput(const rectangle& section, const char* default_text, uint width, const iPoint& offset, bool password, int max_quantity)
 {
 	GuiInputText* ret = NULL;
 
-	ret = new GuiInputText(default_text, width, atlas, section, offset);
+	ret = new GuiInputText(default_text, width, atlas, section, offset, password, max_quantity);
 	elements.add(ret);
 
 	return ret;

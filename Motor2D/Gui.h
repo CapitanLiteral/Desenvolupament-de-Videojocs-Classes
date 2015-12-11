@@ -26,6 +26,7 @@ enum GuiTypes
 	image,
 	label,
 	button,
+	input_text,
 	load_bar
 };
 
@@ -65,10 +66,12 @@ public:
 	bool active = true;
 	Gui* parent = nullptr;
 	p2List<Gui*> childs;
-protected:
 	GuiTypes type = GuiTypes::unknown;
+
+protected:
 	j1Module* listener = nullptr;
 	bool have_focus = false;
+
 private:
 	bool mouse_inside = false;
 	rectangle rect;
@@ -115,7 +118,8 @@ private:
 class GuiInputText : public Gui
 {
 public:
-	GuiInputText(const char* default_text, uint width, const SDL_Texture* texture, const rectangle& section, const iPoint& offset = {0, 0});
+	GuiInputText(const char* default_text, uint width, const SDL_Texture* texture, const rectangle& section, const iPoint& offset = { 0, 0 },
+		bool password = false, int _max_quantity = 0);
 	~GuiInputText();
 
 	void Update(const Gui* mouse_hover, const Gui* focus);
@@ -124,13 +128,16 @@ public:
 private:
 
 	GuiLabel text;
+	int max_quantity;
+	bool password;
 	GuiImage image;
 	p2SString input;
-	iPoint cursor_coords = {0, 0};
+	iPoint cursor_coords = { 0, 0 };
 	int last_cursor = 0;
 	bool had_focus = false;
+	const char* def_text;
+	bool show_def_text;
 };
-
 class GuiLoadBar : public Gui
 {
 public:

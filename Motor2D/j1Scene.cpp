@@ -59,6 +59,13 @@ bool j1Scene::Start()
 	input->SetLocalPos(input->GetLocalPos().x, 150);
 	input->can_focus = true;
 
+	Gui* pass = App->gui->CreateInput({ 488, 569, 344, 61 }, "Your password", 315, { -13, -14 }, true);
+	pass->parent = window;
+	pass->interactive = true;
+	pass->Center();
+	pass->SetLocalPos(pass->GetLocalPos().x, 250);
+	pass->can_focus = true;
+
 	button = App->gui->CreateImage({642, 169, 229, 69});
 	button->SetListener(this);
 	button->interactive = true;
@@ -71,6 +78,7 @@ bool j1Scene::Start()
 
 	text->Center();
 	button->Center();
+	button->SetLocalPos(button->GetLocalPos().x, button->GetLocalPos().y + 125);
 
 	Gui* title = App->gui->CreateLabel("Window Title");
 	title->SetParent(window);
@@ -88,7 +96,7 @@ bool j1Scene::Start()
 	bar->Center();
 	bar->bar.SetLocalPos(bar->cover.GetLocalPos().x + 7, bar->cover.GetLocalPos().y + 5);
 	iPoint p2 = bar->GetLocalPos();
-	bar->SetLocalPos(p2.x, p2.y + 100);
+	bar->SetLocalPos(p2.x, p2.y + 300);
 
 	sprintf_s(lifes, "%d", life);
 	life_ammount = App->gui->CreateLabel(lifes);

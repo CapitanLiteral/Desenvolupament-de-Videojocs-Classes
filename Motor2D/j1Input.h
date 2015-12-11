@@ -61,9 +61,10 @@ public:
 		return mouse_buttons[id - 1];
 	}
 
-	void StartTextInput(SDL_Rect* rect = NULL);
+	void StartTextInput(SDL_Rect* rect = NULL, p2SString input = "");
 	void EndTextInput();
 	const char* GetTextInput(int& cursor, int& selection) const;
+	void TextInputTooLong();
 
 	// Check if a certain window event happened
 	bool GetWindowEvent(int code);
@@ -83,7 +84,9 @@ private:
 	// Text Input
 	bool		text_input;
 	p2SString	last_text_input;
+	p2SString	last_last_text_input;
 	int			cursor_text_input;
+	int			last_cursor_text_input;
 	int			selection_text_input;
 };
 

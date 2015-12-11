@@ -235,17 +235,23 @@ void GuiLabel::Draw() const
 }
 
 // class GuiInputText ---------------------------------------------------
-GuiInputText::GuiInputText(const char* default_text, uint width, const SDL_Texture* texture, const rectangle& section, const iPoint& offset) 
+GuiInputText::GuiInputText(const char* default_text, uint width, const SDL_Texture* texture, const rectangle& section, const iPoint& offset, bool pass, int _max_quantity)
 	: Gui(), text(default_text), input(default_text), image(texture, section)
 {
-	type = GuiTypes::label;
+	type = GuiTypes::input_text;
 	SetSize(width, text.GetScreenRect().h);
-	text.SetParent(this);
-	image.SetParent(this);
+	text.parent = this;
+	image.parent = this;
 	image.SetLocalPos(offset.x, offset.y);
+	max_quantity = _max_quantity;
+	password = pass;
+	def_text = default_text;
+	show_def_text = true;
 
 	// Calculate the Y so we have it ready
 	App->font->CalcSize("A", cursor_coords.x, cursor_coords.y);
+	if (max_quantity == 0)
+		max_quantity = width / cursor_coords.x;
 	cursor_coords.x = 0;
 }
 
@@ -257,48 +263,92 @@ GuiInputText::~GuiInputText()
 // --------------------------
 void GuiInputText::Update(const Gui* mouse_hover, const Gui* focus)
 {
-	if(interactive == false)
+	if (interactive == false)
 		return;
 
 	bool inside = (mouse_hover == this);
 	bool have_focus = (focus == this);
 
 	// TODO : focus
-	if(had_focus != have_focus)
+	if (had_focus != have_focus)
 	{
-		if(have_focus == true)
-			App->input->StartTextInput(nullptr);
+		if (have_focus == true)
+		{
+			if (show_def_text == true)
+			{
+				input.Clear();
+				show_def_text = false;
+			}
+			App->input->StartTextInput(nullptr, input);
+		}
 		else
-			App->input->EndTextInput();
+		{
+			if (input.Length() == 0)
+			{
+				input = def_text;
+				show_def_text = true;
+				text.SetText(input.GetString());
+			}
+			if (focus->type != GuiTypes::input_text)
+				App->input->EndTextInput();
+		}
 
 		had_focus = have_focus;
 	}
 
 	static p2SString selected(100);
 
-	if(have_focus == true)
+	if (have_focus == true)
 	{
 		// TODO 5: Calculate where the cursor has to be placed and update your label
 		// in the InputText ui element
 		int cursor, selection;
-		const char* user_input = App->input->GetTextInput(cursor, selection);
-		if(input != user_input || cursor != last_cursor)
+		p2SString user_input = App->input->GetTextInput(cursor, selection);
+
+		if (input != user_input || cursor != last_cursor)
 		{
-			if(input != user_input)
+			if (input != user_input)
 			{
+				if (user_input.Length() > max_quantity)
+				{
+					user_input = input;
+					cursor = last_cursor;
+					App->input->TextInputTooLong();
+				}
+
 				input = user_input;
-				text.SetText(user_input);
-				if(listener != nullptr)
+				if (password == true)
+				{
+					p2SString pass_hided;
+					for (int x = input.Length(); x > 0; x--)
+						pass_hided.Insert(0, "*");
+					text.SetText(pass_hided.GetString());
+				}
+				else
+					text.SetText(user_input.GetString());
+
+				if (listener != nullptr)
 					listener->OnGui(this, GuiEvents::input_changed);
 			}
 
 			last_cursor = cursor;
-			if(cursor > 0)
+			if (cursor > 0)
 			{
-				if(input.Length() >= selected.GetCapacity())
+				if (input.Length() >= selected.GetCapacity())
 					selected.Reserve(input.Length() * 2);
-				input.SubString(0, cursor, selected);
-				App->font->CalcSize(selected.GetString(), cursor_coords.x, cursor_coords.y);
+				if (password == true)
+				{
+					p2SString pass_hided;
+					for (int x = input.Length(); x > 0; x--)
+						pass_hided.Insert(0, "*");
+					pass_hided.SubString(0, cursor, selected);
+					App->font->CalcSize(selected.GetString(), cursor_coords.x, cursor_coords.y);
+				}
+				else
+				{
+					input.SubString(0, cursor, selected);
+					App->font->CalcSize(selected.GetString(), cursor_coords.x, cursor_coords.y);
+				}
 			}
 			else
 			{
@@ -306,7 +356,7 @@ void GuiInputText::Update(const Gui* mouse_hover, const Gui* focus)
 			}
 		}
 
-		if(selection != 0 && listener != nullptr)
+		if (selection != 0 && listener != nullptr)
 		{
 			listener->OnGui(this, GuiEvents::input_submit);
 		}
@@ -320,17 +370,17 @@ void GuiInputText::Draw() const
 	image.Draw();
 
 	// render text
-	if(input.Length() > 0)
+	if (input.Length() > 0)
 		text.Draw();
 
 	// render cursor
-	if(have_focus == true)
+	if (have_focus == true)
 	{
 		// TODO 2: Draw cursor when focus is received
 		// use a simple DrawQuad. For the size and position use
 		// App->font->CalcSize
 		iPoint pos = GetScreenPos();
-		App->render->DrawQuad({pos.x + (cursor_coords.x - (CURSOR_WIDTH / 2)), pos.y, CURSOR_WIDTH, cursor_coords.y}, 255, 255, 255, 255, true, false);
+		App->render->DrawQuad({ pos.x + (cursor_coords.x - (CURSOR_WIDTH / 2)), pos.y, CURSOR_WIDTH, cursor_coords.y }, 255, 255, 255, 255, true, false);
 	}
 }
 
