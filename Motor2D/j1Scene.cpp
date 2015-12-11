@@ -12,8 +12,6 @@
 #include "Gui.h"
 #include "j1Scene.h"
 
-#include <stdio.h>
-
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
@@ -91,17 +89,12 @@ bool j1Scene::Start()
 	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
 	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
 
-	bar = App->gui->CreateBar(100.0f, rectangle{ 0, 276, 858, 37 }, rectangle{ 28, 430, 875, 49 });
+	bar = App->gui->CreateBar(life, rectangle{ 0, 276, 858, 37 }, rectangle{ 28, 430, 875, 49 }, true);
 	bar->SetParent(window);
 	bar->Center();
 	bar->bar.SetLocalPos(bar->cover.GetLocalPos().x + 7, bar->cover.GetLocalPos().y + 5);
 	iPoint p2 = bar->GetLocalPos();
 	bar->SetLocalPos(p2.x, p2.y + 300);
-
-	sprintf_s(lifes, "%d", life);
-	life_ammount = App->gui->CreateLabel(lifes);
-	life_ammount->SetParent(bar);
-	life_ammount->Center();
 
 	return true;
 }
@@ -134,9 +127,6 @@ bool j1Scene::PreUpdate()
 		}
 	}
 
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
-	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
-
 	return true;
 }
 
@@ -144,8 +134,7 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	// Gui ---
-	sprintf_s(lifes, "%d", life);
-	life_ammount->SetText(lifes);
+
 	// -------
 	if(App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
 		App->LoadGame("save_game.xml");
@@ -184,24 +173,12 @@ bool j1Scene::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 	{
-		if (life > 0)
-		{
-			life -= 10;
-		}
-		else
-			life = 0;
-		bar->SetBar(life);
+		bar->Decrease(10);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 	{
-		if (life < 100)
-		{
-			life += 10;
-		}
-		else
-			life = 100;
-		bar->SetBar(life);
+		bar->Grow(10);
 	}
 
 	App->map->Draw();
@@ -244,6 +221,9 @@ bool j1Scene::PostUpdate()
 
 	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
+
+	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
 
 	return ret;
 }

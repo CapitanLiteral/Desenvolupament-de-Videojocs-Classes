@@ -47,8 +47,8 @@ private:
 	Gui* window;
 	GuiLabel* life_ammount;
 
-	int life = 100;
-	char lifes[4];
+	int life = 1000;
+	char lifes[10];
 };
 
 #endif // __j1SCENE_H__

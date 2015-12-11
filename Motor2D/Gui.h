@@ -100,6 +100,7 @@ private:
 class GuiLabel : public Gui
 {
 public:
+	GuiLabel();
 	GuiLabel(const char* text);
 	~GuiLabel();
 
@@ -141,21 +142,25 @@ private:
 class GuiLoadBar : public Gui
 {
 public:
-	GuiLoadBar(int value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect);
+	GuiLoadBar(int value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect, bool show_text);
 	~GuiLoadBar();
 
 	void Update();
 	void Draw()const;
-	void SetBar(int actual_value);
+	void Grow(int percentage);
+	void Decrease(int percentage);
 
 public:
 	GuiImage bar;
 	GuiImage cover;
+	GuiLabel percentage;
 private:
 	iPoint bar_size;
 	int value;	//How much the hole bar represents
-	int actual_value;		//How much the bar each iteration must represent
+	char values[100];
+	float actual_value_percentage = 100;		//How much the bar each iteration must represent
 	rectangle bar_section;
+	bool show_text;
 };
 
 #endif // __GUI_H__

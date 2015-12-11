@@ -196,11 +196,11 @@ GuiInputText* j1Gui::CreateInput(const rectangle& section, const char* default_t
 	return ret;
 }
 
-GuiLoadBar* j1Gui::CreateBar(float value, const rectangle& bar_sect, const rectangle& cover_sect)
+GuiLoadBar* j1Gui::CreateBar(float value, const rectangle& bar_sect, const rectangle& cover_sect, bool show_text)
 {
 	GuiLoadBar* ret = NULL;
 
-	ret = new GuiLoadBar(value, atlas, bar_sect, cover_sect);
+	ret = new GuiLoadBar(value, atlas, bar_sect, cover_sect, show_text);
 	elements.add(ret);
 
 	return ret;

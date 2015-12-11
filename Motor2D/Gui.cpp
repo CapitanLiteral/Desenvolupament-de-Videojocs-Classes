@@ -8,6 +8,8 @@
 #include "Gui.h"
 #include "j1App.h"
 
+#include <stdio.h>
+
 // class Gui ---------------------------------------------------
 Gui::Gui() : rect({0,0,0,0})
 {
@@ -196,6 +198,12 @@ const SDL_Texture* GuiImage::GetTexture()const
 }
 
 // class GuiLabel ---------------------------------------------------
+GuiLabel::GuiLabel() : Gui()
+{
+	type = GuiTypes::label;
+	texture = NULL;
+}
+
 GuiLabel::GuiLabel(const char* text) : Gui()
 {
 	SetText(text);
@@ -384,35 +392,62 @@ void GuiInputText::Draw() const
 	}
 }
 
-GuiLoadBar::GuiLoadBar(int value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect) :
-value(value), bar(texture, bar_sect), cover(texture, cover_sect), bar_section(bar_sect), actual_value(value)
+GuiLoadBar::GuiLoadBar(int value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect, bool show_text) :
+value(value), bar(texture, bar_sect), cover(texture, cover_sect), show_text(show_text),bar_section(bar_sect)
 {
+	sprintf_s(values, "%d", (int)actual_value_percentage);
+	percentage.SetText(values);
 	type = GuiTypes::load_bar;
 	cover.SetParent(this);
 	bar.SetParent(&cover);
 	bar_size.x = bar.GetSection().w;
 	bar_size.y = bar.GetSection().h;
 	SetSize(cover_sect.w, cover_sect.h);
+	percentage.SetParent(this);
+	percentage.Center();
 }
 
 GuiLoadBar::~GuiLoadBar()
 {
 }
 
-void GuiLoadBar::SetBar(int _value)
+void GuiLoadBar::Grow(int percentage)
 {
-	actual_value = _value;
+	if (actual_value_percentage + percentage >= 100)
+	{
+		actual_value_percentage = 100;
+	}
+	else
+		actual_value_percentage += percentage;
+}
+
+void GuiLoadBar::Decrease(int percentage)
+{
+	if (actual_value_percentage - percentage <= 0)
+	{
+		actual_value_percentage = 0;
+	}
+	else
+		actual_value_percentage -= percentage;
 }
 
 void GuiLoadBar::Update()
 {
-	bar_section.w = ((bar_size.x * actual_value) / value);
+	bar_section.w = (bar_size.x * (actual_value_percentage / 100.0f));
 	bar_section.h = bar_size.y;
 	bar.SetSection(bar_section);
+
+	sprintf_s(values, "%d", (int)actual_value_percentage);
+	percentage.SetText(values);
 }
 
 void GuiLoadBar::Draw()const
 {
 	cover.Draw();
 	bar.Draw();
+
+	if (show_text == true)
+	{
+		percentage.Draw();
+	}
 }
