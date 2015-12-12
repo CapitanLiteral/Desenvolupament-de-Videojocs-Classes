@@ -170,12 +170,13 @@ private:
 class GuiHSlider : public Gui
 {
 public:
-	GuiHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& offset, iPoint margins);
+	GuiHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& offset, iPoint margins, float value);
 	~GuiHSlider();
 
 	void Update(const Gui* mouse_hover, const Gui* focus);
 	void Draw() const;
 	float GetValue() const;
+	void SetSliderValue(float value);
 
 private:
 
@@ -185,6 +186,29 @@ private:
 	int min_x = 0;
 	int max_x = 0;
 	int thumb_pos = 0;
+	float slider_value = 0;
+};
+
+class GuiVSlider : public Gui
+{
+public:
+	GuiVSlider(const rectangle& bar, const rectangle& thumb, const rectangle& offset, iPoint margins, float value);
+	~GuiVSlider();
+
+	void Update(const Gui* mouse_hover, const Gui* focus);
+	void Draw() const;
+	float GetValue() const;
+	void SetSliderValue(float value);
+
+private:
+
+	GuiImage bar;
+	GuiImage thumb;
+	iPoint margins;
+	int min_y = 0;
+	int max_y = 0;
+	int thumb_pos = 0;
+	float slider_value = 0;
 };
 
 #endif // __GUI_H__

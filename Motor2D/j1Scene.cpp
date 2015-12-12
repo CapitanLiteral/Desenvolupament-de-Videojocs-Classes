@@ -92,7 +92,7 @@ bool j1Scene::Start()
 	iPoint p2 = bar->GetLocalPos();
 	bar->SetLocalPos(p2.x, p2.y + 300);
 
-	sliderH = App->gui->CreateHSlider({ 0, 11, 307, 11 }, { 805, 318, 26, 15 }, { -5, 0, -10, 0 }, { 0, -2 });
+	sliderH = App->gui->CreateHSlider({ 0, 11, 307, 11 }, { 805, 318, 26, 15 }, { -5, 0, -10, 0 }, { 0, -2 }, 100.0f);
 	sliderH->SetParent(window);
 	sliderH->Center();
 	sliderH->SetLocalPos(sliderH->GetLocalPos().x, 100);
@@ -275,7 +275,7 @@ Dark Button coords are {645,165,229,69} - normal state
 		switch (event)
 		{
 		case value_changed:
-			char n[20000];
+			char n[20];
 			sprintf_s(n, "Value: %0.2f", sliderH->GetValue());
 			title->SetText(n);
 			break;

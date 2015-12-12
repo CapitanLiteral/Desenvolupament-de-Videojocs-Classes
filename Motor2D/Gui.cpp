@@ -456,8 +456,8 @@ void GuiLoadBar::Draw()const
 
 // --------------------------
 
-GuiHSlider::GuiHSlider(const rectangle& bar_sect, const rectangle& thumb_sect, const rectangle& offset, iPoint margins)
-	: bar(App->gui->GetAtlas(), bar_sect), thumb(App->gui->GetAtlas(), thumb_sect), margins(margins)
+GuiHSlider::GuiHSlider(const rectangle& bar_sect, const rectangle& thumb_sect, const rectangle& offset, iPoint margins, float value)
+	: bar(App->gui->GetAtlas(), bar_sect), thumb(App->gui->GetAtlas(), thumb_sect), margins(margins), slider_value(value)
 {
 	type = GuiTypes::h_slider;
 	SetSize(bar.GetSection().w + offset.w, bar.GetSection().h + offset.h);
@@ -538,5 +538,102 @@ void GuiHSlider::Draw()const
 float GuiHSlider::GetValue() const
 {
 	iPoint p = thumb.GetLocalPos();
-	return float((p.x * 100.0f) / max_x);
+	return float((p.x * slider_value) / max_x);
+}
+
+void GuiHSlider::SetSliderValue(float value)
+{
+	slider_value = value;
+}
+
+// --------------------------
+
+GuiVSlider::GuiVSlider(const rectangle& bar_sect, const rectangle& thumb_sect, const rectangle& offset, iPoint margins, float value)
+	: bar(App->gui->GetAtlas(), bar_sect), thumb(App->gui->GetAtlas(), thumb_sect), margins(margins), slider_value(value)
+{
+	type = GuiTypes::h_slider;
+	SetSize(bar.GetSection().w + offset.w, bar.GetSection().h + offset.h);
+	this->bar.SetParent(this);
+	this->thumb.SetParent(this);
+	this->bar.SetLocalPos(offset.x, offset.y);
+	this->thumb.SetLocalPos(margins.x, margins.y);
+
+	min_y = margins.y;
+	max_y = bar.GetSection().h + offset.h - margins.y - thumb.GetSection().h;
+}
+
+GuiVSlider::~GuiVSlider()
+{
+}
+
+void GuiVSlider::Update(const Gui* mouse_hover, const Gui* focus)
+{
+	int requested_change = 0;
+
+	if (focus == this)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_UP) == j1KeyState::KEY_REPEAT)
+		{
+			requested_change = -1;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == j1KeyState::KEY_REPEAT)
+		{
+			requested_change = 1;
+		}
+	}
+
+	if (mouse_hover == this)
+	{
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == j1KeyState::KEY_REPEAT)
+		{
+			iPoint mouse;
+			App->input->GetMousePosition(mouse.x, mouse.y);
+			if (thumb.GetScreenRect().Contains(mouse.x, mouse.y))
+			{
+				iPoint motion;
+				App->input->GetMouseMotion(motion.x, motion.y);
+				requested_change = motion.y;
+			}
+			else
+			{
+				iPoint pos = thumb.GetScreenPos();
+				if (mouse.y < pos.y)
+					requested_change = -1;
+				else
+					requested_change = 1;
+			}
+		}
+	}
+
+	if (requested_change != 0)
+	{
+		iPoint p = thumb.GetLocalPos();
+		int y = MIN(max_y, p.y + requested_change);
+		if (y < min_y)
+			y = min_y;
+
+		if (y != p.y)
+		{
+			if (listener != NULL)
+				listener->OnGui(this, GuiEvents::value_changed);
+			thumb.SetLocalPos(p.x, y);
+		}
+	}
+}
+
+void GuiVSlider::Draw()const
+{
+	bar.Draw();
+	thumb.Draw();
+}
+
+float GuiVSlider::GetValue() const
+{
+	iPoint p = thumb.GetLocalPos();
+	return float((p.y * slider_value) / max_y);
+}
+
+void GuiVSlider::SetSliderValue(float value)
+{
+	slider_value = value;
 }

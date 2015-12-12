@@ -215,11 +215,11 @@ GuiLoadBar* j1Gui::CreateBar(float value, const rectangle& bar_sect, const recta
 	return ret;
 }
 
-GuiHSlider* j1Gui::CreateHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins)
+GuiHSlider* j1Gui::CreateHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins, float value)
 {
 	GuiHSlider* ret = NULL;
 
-	ret = new GuiHSlider(bar, thumb, bar_offset, thumb_margins);
+	ret = new GuiHSlider(bar, thumb, bar_offset, thumb_margins, value);
 	elements.add(ret);
 
 	return ret;

@@ -44,7 +44,7 @@ public:
 	GuiLabel* CreateLabel(const char* text);
 	GuiInputText* CreateInput(const rectangle& section, const char* default_text, uint width, const iPoint& offset = { 0, 0 }, bool password = false, int max_quantity = 0);
 	GuiLoadBar* CreateBar(float value, const rectangle& bar_sect, const rectangle& cover_sect, bool show_text = false);
-	GuiHSlider* CreateHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins);
+	GuiHSlider* CreateHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins, float value);
 	
 	bool DeleteGuiElement(Gui* elem);
 	void DisableGuiElement(Gui* elem);
