@@ -17,7 +17,8 @@ enum GuiEvents
 	gain_focus,
 	lost_focus,
 	input_changed,
-	input_submit
+	input_submit,
+	value_changed
 };
 
 enum GuiTypes
@@ -27,7 +28,9 @@ enum GuiTypes
 	label,
 	button,
 	input_text,
-	load_bar
+	load_bar,
+	h_slider,
+	v_slider
 };
 
 // ---------------------------------------------------
@@ -139,6 +142,7 @@ private:
 	const char* def_text;
 	bool show_def_text;
 };
+
 class GuiLoadBar : public Gui
 {
 public:
@@ -161,6 +165,26 @@ private:
 	float actual_value_percentage = 100;		//How much the bar each iteration must represent
 	rectangle bar_section;
 	bool show_text;
+};
+
+class GuiHSlider : public Gui
+{
+public:
+	GuiHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& offset, iPoint margins);
+	~GuiHSlider();
+
+	void Update(const Gui* mouse_hover, const Gui* focus);
+	void Draw() const;
+	float GetValue() const;
+
+private:
+
+	GuiImage bar;
+	GuiImage thumb;
+	iPoint margins;
+	int min_x = 0;
+	int max_x = 0;
+	int thumb_pos = 0;
 };
 
 #endif // __GUI_H__

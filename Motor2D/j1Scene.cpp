@@ -78,7 +78,7 @@ bool j1Scene::Start()
 	button->Center();
 	button->SetLocalPos(button->GetLocalPos().x, button->GetLocalPos().y + 125);
 
-	Gui* title = App->gui->CreateLabel("Window Title");
+	title = App->gui->CreateLabel("Window Title");
 	title->SetParent(window);
 	title->Center();
 	iPoint p = title->GetLocalPos();
@@ -91,6 +91,14 @@ bool j1Scene::Start()
 	bar->bar.SetLocalPos(bar->cover.GetLocalPos().x + 7, bar->cover.GetLocalPos().y + 5);
 	iPoint p2 = bar->GetLocalPos();
 	bar->SetLocalPos(p2.x, p2.y + 300);
+
+	sliderH = App->gui->CreateHSlider({ 0, 11, 307, 11 }, { 805, 318, 26, 15 }, { -5, 0, -10, 0 }, { 0, -2 });
+	sliderH->SetParent(window);
+	sliderH->Center();
+	sliderH->SetLocalPos(sliderH->GetLocalPos().x, 100);
+	sliderH->interactive = true;
+	sliderH->can_focus = true;
+	sliderH->SetListener(this);
 
 	return true;
 }
@@ -259,6 +267,17 @@ Dark Button coords are {645,165,229,69} - normal state
 
 			case GuiEvents::mouse_rclick_up:
 				button->SetSection(rectangle{ 0, 113, 229, 69 });
+			break;
+		}
+	}
+	if (ui == sliderH)
+	{
+		switch (event)
+		{
+		case value_changed:
+			char n[20000];
+			sprintf_s(n, "Value: %0.2f", sliderH->GetValue());
+			title->SetText(n);
 			break;
 		}
 	}

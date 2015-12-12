@@ -106,15 +106,12 @@ const Gui* j1Gui::FindMouseHover() const
 	iPoint mouse;
 	App->input->GetMousePosition(mouse.x, mouse.y);
 
-	rectangle r;
-	for(p2List_item<Gui*>* item = elements.end; item; item = item->prev)
+	for (p2List_item<Gui*>* item = elements.end; item; item = item->prev)
 	{
-		if (item->data->interactive == true && item->data->active == true)
+		if (item->data->interactive == true)
 		{
-			r = item->data->GetScreenRect();
-			if((mouse.x >= r.x) && (mouse.x < (r.x + r.w)) &&
-			   (mouse.y >= r.y) && (mouse.y < (r.y + r.h)))
-			   return item->data;
+			if (item->data->GetScreenRect().Contains(mouse.x, mouse.y))
+				return item->data;
 		}
 	}
 
@@ -217,6 +214,17 @@ GuiLoadBar* j1Gui::CreateBar(float value, const rectangle& bar_sect, const recta
 
 	return ret;
 }
+
+GuiHSlider* j1Gui::CreateHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins)
+{
+	GuiHSlider* ret = NULL;
+
+	ret = new GuiHSlider(bar, thumb, bar_offset, thumb_margins);
+	elements.add(ret);
+
+	return ret;
+}
+
 
 // const getter for atlas
 const SDL_Texture* j1Gui::GetAtlas() const

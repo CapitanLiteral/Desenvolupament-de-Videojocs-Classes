@@ -7,6 +7,7 @@ struct SDL_Texture;
 class GuiImage;
 class GuiLoadBar;
 class GuiLabel;
+class GuiHSlider;
 
 class j1Scene : public j1Module
 {
@@ -43,10 +44,10 @@ private:
 	GuiImage* button;
 	GuiLoadBar* bar;
 	Gui* window;
-	GuiLabel* life_ammount;
+	GuiHSlider* sliderH;
+	GuiLabel* title;
 
 	int life = 1000;
-	char lifes[10];
 };
 
 #endif // __j1SCENE_H__
