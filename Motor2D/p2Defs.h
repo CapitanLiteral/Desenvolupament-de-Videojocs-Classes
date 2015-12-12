@@ -54,8 +54,7 @@ struct rectangle
 
 	bool Contains(int x, int y) const
 	{
-		return ((x >= this->x) && (x < (this->x + w)) &&
-			(y >= this->y) && (y < (this->y + h)));
+		return ((x >= this->x) && (x < (this->x + w)) && (y >= this->y) && (y < (this->y + h)));
 	}
 };
 

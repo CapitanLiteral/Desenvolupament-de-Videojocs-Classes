@@ -47,6 +47,9 @@ private:
 	GuiHSlider* sliderH;
 	GuiLabel* title;
 
+	GuiImage* image;
+	GuiImage* help;
+
 	int life = 1000;
 };
 

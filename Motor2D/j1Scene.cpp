@@ -11,6 +11,7 @@
 #include "j1Gui.h"
 #include "Gui.h"
 #include "j1Scene.h"
+#include "j1Timer.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -99,6 +100,16 @@ bool j1Scene::Start()
 	sliderH->interactive = true;
 	sliderH->can_focus = true;
 	sliderH->SetListener(this);
+
+	image = App->gui->CreateImage({874, 706, 32, 26});
+	image->SetLocalPos(5, 5);
+	image->SetListener(this);
+	image->interactive = true;
+
+	help = App->gui->CreateImage({485, 829, 328, 103});
+	help->SetLocalPos(35, 5);
+	help->SetParent(image);
+	help->active = false;
 
 	return true;
 }
@@ -234,7 +245,6 @@ bool j1Scene::CleanUp()
 // Called when UI event is raised
 void j1Scene::OnGui(Gui* ui, GuiEvents event)
 {
-
 /*Normal Button coords are {0,111,229,69} - hover state
 Bright Button coords are {410,169,229,69} - click state
 Dark Button coords are {645,165,229,69} - normal state
@@ -279,6 +289,18 @@ Dark Button coords are {645,165,229,69} - normal state
 			sprintf_s(n, "Value: %0.2f", sliderH->GetValue());
 			title->SetText(n);
 			break;
+		}
+	}
+	if (ui == image)
+	{
+		switch (event)
+		{
+			case GuiEvents::mouse_enters:
+				help->active = true;
+				break;
+			case GuiEvents::mouse_leaves:
+				help->active = false;
+				break;
 		}
 	}
 }
