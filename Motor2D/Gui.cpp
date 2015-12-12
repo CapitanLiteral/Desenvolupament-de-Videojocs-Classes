@@ -437,7 +437,9 @@ void GuiLoadBar::Update()
 	bar_section.h = bar_size.y;
 	bar.SetSection(bar_section);
 
-	sprintf_s(values, "%d", (int)actual_value_percentage);
+	int v = ((actual_value_percentage * value) / 100.0f);
+
+	sprintf_s(values, "%d", (int)v);
 	percentage.SetText(values);
 }
 
