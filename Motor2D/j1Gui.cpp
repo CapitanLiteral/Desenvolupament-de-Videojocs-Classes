@@ -32,8 +32,8 @@ bool j1Gui::Start()
 {
 	atlas = App->tex->Load(atlas_file_name.GetString());
 
-	mouse_cursor = App->gui->CreateImage("curs.png");
-	mouse_cursor->SetSection(rectangle{ 6, 0, 22, 32 });
+	SDL_Texture* curs = App->tex->Load("curs.png");
+	mouse_cursor = new GuiImage(curs, rectangle{ 6, 0, 22, 32 });
 	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
 	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
 
@@ -94,6 +94,9 @@ bool j1Gui::PreUpdate()
 			item->data->Update();
 		}
 
+	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
+	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
+
 	return true;
 }
 
@@ -133,8 +136,6 @@ bool j1Gui::PostUpdate()
 		}
 	}
 
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
-	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
 	mouse_cursor->Draw();
 
 	return true;
@@ -151,6 +152,8 @@ bool j1Gui::CleanUp()
 		RELEASE(item->data);
 
 	elements.clear();
+
+	delete mouse_cursor;
 
 	return true;
 }
