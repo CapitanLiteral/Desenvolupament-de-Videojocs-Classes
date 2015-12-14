@@ -12,6 +12,7 @@
 class j1App;
 class Gui;
 enum GuiEvents;
+enum  ComandType;
 
 class j1Module
 {
@@ -75,6 +76,9 @@ public:
 	}
 
 	virtual void OnGui(Gui* ui, GuiEvents event)
+	{}
+
+	virtual void OnComand(ComandType comand)
 	{}
 
 public:
