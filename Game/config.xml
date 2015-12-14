@@ -34,4 +34,8 @@
     <folder>maps/</folder>
   </map>
 
+  <scene>
+    <map>iso_walk.tmx/</map>
+  </scene>
+
 </config>

@@ -19,7 +19,7 @@ public:
 	virtual ~j1Scene();
 
 	// Called before render is available
-	bool Awake();
+	bool Awake(pugi::xml_node& config);
 
 	// Called before the first frame
 	bool Start();
@@ -51,6 +51,7 @@ private:
 	GuiImage* help;
 
 	int life = 1000;
+	p2SString map_name;
 };
 
 #endif // __j1SCENE_H__

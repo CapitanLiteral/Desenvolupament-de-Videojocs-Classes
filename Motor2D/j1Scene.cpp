@@ -11,7 +11,6 @@
 #include "j1Gui.h"
 #include "Gui.h"
 #include "j1Scene.h"
-#include "j1Timer.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -23,10 +22,12 @@ j1Scene::~j1Scene()
 {}
 
 // Called before render is available
-bool j1Scene::Awake()
+bool j1Scene::Awake(pugi::xml_node& config)
 {
 	LOG("Loading Scene");
 	bool ret = true;
+
+	map_name.create(config.child("map").child_value());
 
 	return ret;
 }
@@ -34,7 +35,7 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	if(App->map->Load("iso_walk.tmx") == true)
+	if(App->map->Load(map_name.GetString()) == true)
 	{
 		int w, h;
 		uchar* data = NULL;
