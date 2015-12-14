@@ -46,8 +46,6 @@ public:
 	virtual void DebugDraw() const;
 	virtual void Update(const Gui* mouse_hover, const Gui* focus)
 	{}
-	virtual void Update()
-	{}
 	void CheckInput(const Gui* mouse_hover, const Gui* focus);
 	void SetLocalPos(int x, int y);
 	void Center();
@@ -149,7 +147,7 @@ public:
 	GuiLoadBar(int value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect, bool show_text);
 	~GuiLoadBar();
 
-	void Update();
+	void Update(const Gui* mouse_hover, const Gui* focus);
 	void Draw()const;
 	void Grow(int percentage);
 	void Decrease(int percentage);

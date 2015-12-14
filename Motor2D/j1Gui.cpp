@@ -91,7 +91,6 @@ bool j1Gui::PreUpdate()
 		if (item->data->active == true)
 		{
 			item->data->Update(mouse_hover, focus);
-			item->data->Update();
 		}
 
 	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
@@ -225,6 +224,15 @@ GuiHSlider* j1Gui::CreateHSlider(const rectangle& bar, const rectangle& thumb, c
 	return ret;
 }
 
+GuiVSlider* j1Gui::CreateVSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins, float value)
+{
+	GuiVSlider* ret = NULL;
+
+	ret = new GuiVSlider(bar, thumb, bar_offset, thumb_margins, value);
+	elements.add(ret);
+
+	return ret;
+}
 
 // const getter for atlas
 const SDL_Texture* j1Gui::GetAtlas() const

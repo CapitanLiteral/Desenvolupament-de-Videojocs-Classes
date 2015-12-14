@@ -431,7 +431,7 @@ void GuiLoadBar::Decrease(int percentage)
 		actual_value_percentage -= percentage;
 }
 
-void GuiLoadBar::Update()
+void GuiLoadBar::Update(const Gui* mouse_hover, const Gui* focus)
 {
 	bar_section.w = (bar_size.x * (actual_value_percentage / 100.0f));
 	bar_section.h = bar_size.y;
