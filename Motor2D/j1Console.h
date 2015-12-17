@@ -10,27 +10,6 @@ enum ComandType
 	undefined
 };
 
-struct Comand
-{
-public:
-	Comand(const char* name)
-	{
-		comandName.create(name);
-	}
-	Comand(const char* name, ComandType _type)
-	{
-		comandName.create(name);
-		type = _type;
-	}
-	~Comand()
-	{}
-
-public:
-	j1Module* listener;
-	ComandType type = undefined;
-	p2SString comandName;	
-};
-
 class j1Console : public j1Module
 {
 public:
@@ -41,11 +20,10 @@ public:
 	bool Update();
 	bool CleanUp();
 
-	void AddComand(const char* comand, ComandType _type);
+	void AddComand(const char* comand, ComandType _type, j1Module* listener);
 	void RecibeComand(const char* comand);
 
 private:
-	p2List<Comand*> comands;
 };
 
 #endif
