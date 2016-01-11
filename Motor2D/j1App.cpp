@@ -16,7 +16,6 @@
 #include "j1Fonts.h"
 #include "j1Gui.h"
 #include "j1App.h"
-#include "j1Console.h"
 
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
@@ -34,7 +33,6 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	pathfinding = new j1PathFinding();
 	font = new j1Fonts();
 	gui = new j1Gui();
-	console = new j1Console();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -50,9 +48,6 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 
 	// scene last
 	AddModule(scene);
-
-	// console
-	AddModule(console);
 
 	// render last to swap buffer
 	AddModule(render);

@@ -30,6 +30,7 @@ public:
 	{
 		return "save/";
 	}
+	bool deleteFile(const char* filename);
 
 	// Open for Read/Write
 	unsigned int Load(const char* file, char** buffer) const;

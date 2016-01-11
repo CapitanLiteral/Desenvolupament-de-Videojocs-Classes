@@ -3,6 +3,7 @@
 #include "j1App.h"
 #include "j1FileSystem.h"
 #include "j1Audio.h"
+#include "j1Input.h"
 
 #include "SDL/include/SDL.h"
 #include "SDL_mixer\include\SDL_mixer.h"
@@ -49,9 +50,24 @@ bool j1Audio::Awake(pugi::xml_node& config)
 		LOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 		active = false;
 		ret = true;
+
+		music_volume = config.child("volume").attribute("musicvolume").as_int(MIX_MAX_VOLUME / 2);
+		Mix_VolumeMusic(music_volume);
 	}
 
 	return ret;
+}
+
+bool j1Audio::Update(float dt)
+{
+	if ((App->input->GetKey(SDL_SCANCODE_KP_PLUS) == KEY_DOWN) && App->audio->music_volume < 128)
+		music_volume += 4;
+
+	if (App->input->GetKey(SDL_SCANCODE_KP_MINUS) == KEY_DOWN && App->audio->music_volume > 0)
+		music_volume -= 4;
+
+	Mix_VolumeMusic(music_volume);
+	return true;
 }
 
 // Called before quitting
@@ -171,4 +187,20 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 	}
 
 	return ret;
+}
+
+bool j1Audio::Save(pugi::xml_node& aud)const
+{
+	pugi::xml_node vol = aud.append_child("volume");
+
+	vol.append_attribute("musicvolume") = music_volume;
+
+	return true;
+}
+
+bool j1Audio::Load(pugi::xml_node& aud)
+{
+	music_volume = aud.child("volume").attribute("musicvolume").as_int(MIX_MAX_VOLUME / 2);
+
+	return true;
 }
