@@ -221,6 +221,7 @@ public:
 	void SetSection(const rectangle& section);
 	rectangle GetSection()const;
 	void Draw() const;
+	void Update(const Gui* mouse_hover, const Gui* focus);
 	const SDL_Texture* GetTexture()const;
 
 private:

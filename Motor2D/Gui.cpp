@@ -695,3 +695,22 @@ const SDL_Texture* GuiMCursor::GetTexture()const
 {
 	return curs;
 }
+
+
+void GuiMCursor::Update(const Gui* mouse_hover, const Gui* focus)
+{
+	if (listener != nullptr)
+	{
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == j1KeyState::KEY_DOWN)
+			listener->OnGui(this, GuiEvents::mouse_lclick_down);
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == j1KeyState::KEY_UP)
+			listener->OnGui(this, GuiEvents::mouse_lclick_up);
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == j1KeyState::KEY_DOWN)
+			listener->OnGui(this, GuiEvents::mouse_rclick_down);
+
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == j1KeyState::KEY_UP)
+			listener->OnGui(this, GuiEvents::mouse_lclick_up);
+	}
+}

@@ -112,7 +112,8 @@ bool j1Scene::Start()
 	help->SetParent(image);
 	help->active = false;
 
-	GuiMCursor* curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
+	curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
+	curs->SetListener(this);
 
 	return true;
 }
@@ -302,6 +303,25 @@ Dark Button coords are {645,165,229,69} - normal state
 			case GuiEvents::mouse_leaves:
 				help->active = false;
 				break;
+		}
+	}
+
+	if (ui->type == GuiTypes::mouse_cursor)
+	{
+		switch (event)
+		{
+		case mouse_lclick_down:
+			curs->SetSection(rectangle{ 48, 1, 46, 48 });
+			break;
+		case mouse_lclick_up:
+			curs->SetSection(rectangle{ 0, 1, 46, 48 });
+			break;
+		case mouse_rclick_down:
+			curs->SetSection(rectangle{ 96, 1, 46, 48 });
+			break;
+		case mouse_rclick_up:
+			curs->SetSection(rectangle{ 0, 1, 46, 48 });
+			break;
 		}
 	}
 }

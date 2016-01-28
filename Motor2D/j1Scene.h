@@ -8,6 +8,7 @@ class GuiImage;
 class GuiLoadBar;
 class GuiLabel;
 class GuiHSlider;
+class GuiMCursor;
 
 class j1Scene : public j1Module
 {
@@ -40,18 +41,20 @@ public:
 	void OnGui(Gui* ui, GuiEvents event);
 
 private:
-	SDL_Texture* debug_tex;
-	GuiImage* button;
-	GuiLoadBar* bar;
-	Gui* window;
-	GuiHSlider* sliderH;
-	GuiLabel* title;
+	SDL_Texture* debug_tex = NULL;
+	GuiImage* button = NULL;
+	GuiLoadBar* bar = NULL;
+	Gui* window = NULL;
+	GuiHSlider* sliderH = NULL;
+	GuiLabel* title = NULL;
 
-	GuiImage* image;
-	GuiImage* help;
+	GuiImage* image = NULL;
+	GuiImage* help = NULL;
 
 	int life = 1000;
 	p2SString map_name;
+	GuiMCursor* curs = NULL;
+
 };
 
 #endif // __j1SCENE_H__
