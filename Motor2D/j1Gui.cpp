@@ -307,3 +307,35 @@ bool j1Gui::DeleteGuiElement(Gui* elem)
 	}
 	return ret;
 }
+
+bool j1Gui::Save(pugi::xml_node& config)const
+{
+	for (p2List_item<Gui*>* tmp = elements.start; tmp != NULL; tmp = tmp->next)
+	{
+		if (tmp->data->draggable == true)
+		{
+			pugi::xml_node dragUIElement = config.append_child("draggableUIelements");
+			dragUIElement.append_attribute("position_x") = tmp->data->GetLocalPos().x;
+			dragUIElement.append_attribute("position_y") = tmp->data->GetLocalPos().y;
+		}
+	}
+
+	return true;
+}
+
+bool j1Gui::Load(pugi::xml_node& config)
+{
+	pugi::xml_node son = config.first_child();
+	for (p2List_item<Gui*>* tmp = elements.start; tmp != NULL && son != NULL; tmp = tmp->next)
+	{
+		if (tmp->data->draggable == true)
+		{
+			int x = son.attribute("position_x").as_int(0);
+			int y = son.attribute("position_y").as_int(0);
+			tmp->data->SetLocalPos(x, y);
+			son = son.next_sibling();
+		}
+	}
+
+	return true;
+}

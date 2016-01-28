@@ -184,3 +184,18 @@ bool j1FileSystem::deleteFile(const char* filename)
 
 	return ret;
 }
+
+bool j1FileSystem::MakeDir(const char* dirName)
+{
+	bool ret = true;
+
+	if (PHYSFS_mkdir(dirName) == 0)
+	{
+		ret = false;
+		LOG("ERROR while creating the new dir %s because of: %s", dirName, PHYSFS_getLastError());
+	}
+	else
+		LOG("The dir %s was created succesfully", dirName);
+
+	return ret;
+}

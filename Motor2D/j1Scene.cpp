@@ -11,6 +11,7 @@
 #include "j1Gui.h"
 #include "Gui.h"
 #include "j1Scene.h"
+#include "j1FileSystem.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -112,8 +113,8 @@ bool j1Scene::Start()
 	help->SetParent(image);
 	help->active = false;
 
-	//curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
-	curs = App->gui->CreateGuiMCursor("d2cursor.png", rectangle{ 0, 0, 32, 31 }, 0, 0);
+	curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
+	//curs = App->gui->CreateGuiMCursor("d2cursor.png", rectangle{ 0, 0, 32, 31 }, 0, 0);
 	curs->SetListener(this);
 
 	return true;
@@ -152,7 +153,8 @@ bool j1Scene::PreUpdate()
 bool j1Scene::Update(float dt)
 {
 	// Gui ---
-
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+		App->fs->MakeDir("NewDir");
 	// -------
 	if(App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
 		App->LoadGame("save_game.xml");

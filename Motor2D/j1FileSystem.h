@@ -31,6 +31,7 @@ public:
 		return "save/";
 	}
 	bool deleteFile(const char* filename);
+	bool MakeDir(const char* dirName);
 
 	// Open for Read/Write
 	unsigned int Load(const char* file, char** buffer) const;

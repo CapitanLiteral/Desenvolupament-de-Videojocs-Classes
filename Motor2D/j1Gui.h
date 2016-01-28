@@ -58,6 +58,9 @@ public:
 	const Gui* FindMouseHover() const;
 	const SDL_Texture* GetAtlas() const;
 
+	bool Save(pugi::xml_node&)const;
+	bool Load(pugi::xml_node&);
+
 private:
 
 	bool debug = false;
