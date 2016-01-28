@@ -112,7 +112,8 @@ bool j1Scene::Start()
 	help->SetParent(image);
 	help->active = false;
 
-	curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
+	//curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
+	curs = App->gui->CreateGuiMCursor("d2cursor.png", rectangle{ 0, 0, 32, 31 }, 0, 0);
 	curs->SetListener(this);
 
 	return true;
