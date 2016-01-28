@@ -30,7 +30,8 @@ enum GuiTypes
 	input_text,
 	load_bar,
 	h_slider,
-	v_slider
+	v_slider,
+	mouse_cursor
 };
 
 // ---------------------------------------------------
@@ -207,6 +208,25 @@ private:
 	int max_y = 0;
 	int thumb_pos = 0;
 	float slider_value = 0;
+};
+
+
+class GuiMCursor : public Gui
+{
+public:
+	GuiMCursor(const SDL_Texture* texture, int margin_x, int margin_y);
+	GuiMCursor(const SDL_Texture* texture, const rectangle& section, int margin_x, int margin_y);
+	~GuiMCursor();
+
+	void SetSection(const rectangle& section);
+	rectangle GetSection()const;
+	void Draw() const;
+	const SDL_Texture* GetTexture()const;
+
+private:
+	rectangle section;
+	const SDL_Texture* curs = nullptr;
+	iPoint margin;
 };
 
 #endif // __GUI_H__

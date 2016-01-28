@@ -11,6 +11,7 @@ class GuiInputText;
 class GuiLoadBar;
 class GuiHSlider;
 class GuiVSlider;
+class GuiMCursor;
 
 struct SDL_Texture;
 
@@ -47,6 +48,8 @@ public:
 	GuiLoadBar* CreateBar(float value, const rectangle& bar_sect, const rectangle& cover_sect, bool show_text = false);
 	GuiHSlider* CreateHSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins, float value);
 	GuiVSlider* CreateVSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins, float value);
+	GuiMCursor* CreateGuiMCursor(const char* filename, int margin_x, int margin_y);
+	GuiMCursor* CreateGuiMCursor(const char* filename, const rectangle& section, int margin_x, int margin_y);
 	
 	bool DeleteGuiElement(Gui* elem);
 	void DisableGuiElement(Gui* elem);
@@ -63,8 +66,6 @@ private:
 	SDL_Texture* atlas = nullptr;
 	p2SString atlas_file_name;
 
-	GuiImage* mouse_cursor;
-	iPoint mouse_pos;
 };
 
 #endif // __j1GUI_H__

@@ -112,14 +112,14 @@ bool j1Scene::Start()
 	help->SetParent(image);
 	help->active = false;
 
+	GuiMCursor* curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
+
 	return true;
 }
 
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-	SDL_ShowCursor(SDL_DISABLE);
-
 	// debug pathfing ------------------
 	static iPoint origin;
 	static bool origin_selected = false;

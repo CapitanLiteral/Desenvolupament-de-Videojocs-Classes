@@ -32,11 +32,6 @@ bool j1Gui::Start()
 {
 	atlas = App->tex->Load(atlas_file_name.GetString());
 
-	SDL_Texture* curs = App->tex->Load("curs.png");
-	mouse_cursor = new GuiImage(curs, rectangle{ 6, 0, 22, 32 });
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
-	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
-
 	return true;
 }
 
@@ -93,9 +88,6 @@ bool j1Gui::PreUpdate()
 			item->data->Update(mouse_hover, focus);
 		}
 
-	App->input->GetMousePosition(mouse_pos.x, mouse_pos.y);
-	mouse_cursor->SetLocalPos(mouse_pos.x, mouse_pos.y);
-
 	return true;
 }
 
@@ -132,8 +124,6 @@ bool j1Gui::PostUpdate()
 		}
 	}
 
-	mouse_cursor->Draw();
-
 	return true;
 }
 
@@ -148,8 +138,6 @@ bool j1Gui::CleanUp()
 		RELEASE(item->data);
 
 	elements.clear();
-
-	delete mouse_cursor;
 
 	return true;
 }
@@ -230,6 +218,34 @@ GuiVSlider* j1Gui::CreateVSlider(const rectangle& bar, const rectangle& thumb, c
 
 	ret = new GuiVSlider(bar, thumb, bar_offset, thumb_margins, value);
 	elements.add(ret);
+
+	return ret;
+}
+
+GuiMCursor* j1Gui::CreateGuiMCursor(const char* filename, int margin_x, int margin_y)
+{
+	GuiMCursor* ret = NULL;
+	SDL_Texture* texture = App->tex->Load(filename);
+
+	if (texture != NULL)
+	{
+		ret = new GuiMCursor(texture, margin_x, margin_y);
+		elements.add(ret);
+	}	
+
+	return ret;
+}
+
+GuiMCursor* j1Gui::CreateGuiMCursor(const char* filename, const rectangle& section, int margin_x, int margin_y)
+{
+	GuiMCursor* ret = NULL;
+	SDL_Texture* texture = App->tex->Load(filename);
+
+	if (texture != NULL)
+	{
+		ret = new GuiMCursor(texture, section, margin_x, margin_y);
+		elements.add(ret);
+	}
 
 	return ret;
 }

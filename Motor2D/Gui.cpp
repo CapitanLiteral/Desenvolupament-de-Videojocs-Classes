@@ -156,6 +156,7 @@ GuiImage::GuiImage(const SDL_Texture* texture) : Gui(), texture(texture)
 GuiImage::GuiImage(const SDL_Texture* texture, const rectangle& section) : Gui(), texture(texture), section(section)
 {
 	SetSize(section.w, section.h);
+	type = GuiTypes::image;
 }
 
 // --------------------------
@@ -636,4 +637,61 @@ float GuiVSlider::GetValue() const
 void GuiVSlider::SetSliderValue(float value)
 {
 	slider_value = value;
+}
+
+
+// class GuiMCursor ---------------------------------------------------
+GuiMCursor::GuiMCursor(const SDL_Texture* texture, int margin_x, int margin_y) : Gui(), curs(texture), margin(margin_x, margin_y)
+{
+	section.x = section.y = 0;
+	App->tex->GetSize(texture, (uint&)section.w, (uint&)section.h);
+
+	SetSize(section.w, section.h);
+	iPoint p;
+	App->input->GetMousePosition(p.x, p.y);
+	SetLocalPos(p.x - margin.x, p.y- margin.y);
+	type = GuiTypes::mouse_cursor;
+}
+
+// --------------------------
+GuiMCursor::GuiMCursor(const SDL_Texture* texture, const rectangle& section, int margin_x, int margin_y) : Gui(), curs(texture), section(section), margin(margin_x, margin_y)
+{
+	SetSize(section.w, section.h);
+	iPoint p;
+	App->input->GetMousePosition(p.x, p.y);
+	SetLocalPos(p.x - margin.x, p.y - margin.y);
+	type = GuiTypes::mouse_cursor;
+}
+
+// --------------------------
+GuiMCursor::~GuiMCursor()
+{}
+
+//---------------------------
+rectangle GuiMCursor::GetSection()const
+{
+	return section;
+}
+
+// --------------------------
+void GuiMCursor::SetSection(const rectangle& section)
+{
+	this->section = section;
+}
+
+// --------------------------
+void GuiMCursor::Draw() const
+{
+	SDL_ShowCursor(SDL_DISABLE);
+
+	iPoint p;
+	App->input->GetMousePosition(p.x, p.y);
+	App->render->Blit(curs, p.x - margin.x, p.y - margin.y, (SDL_Rect*)&section, 0.0f);
+}
+
+//----------------------------
+
+const SDL_Texture* GuiMCursor::GetTexture()const
+{
+	return curs;
 }
