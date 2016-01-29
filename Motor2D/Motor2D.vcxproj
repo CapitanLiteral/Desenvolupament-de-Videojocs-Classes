@@ -119,6 +119,15 @@
     <ClInclude Include="p2SString.h" />
     <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
     <ClInclude Include="PugiXml\src\pugixml.hpp" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Development - Class 14.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Game\diablo2.ico" />
+    <Image Include="C:\Users\jcasa\Desktop\Projects\Folder icons\diablo2_256x256.png" />
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -114,7 +114,7 @@ bool j1Scene::Start()
 	help->active = false;
 
 	curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
-	//curs = App->gui->CreateGuiMCursor("d2cursor.png", rectangle{ 0, 0, 32, 31 }, 0, 0);
+	//curs = App->gui->CreateGuiMCursor("d2cursor.png", 0, 0);
 	curs->SetListener(this);
 
 	return true;
@@ -152,7 +152,7 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	// Gui ---
+	// MakeDir debug ---
 	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
 		App->fs->MakeDir("NewDir");
 	// -------

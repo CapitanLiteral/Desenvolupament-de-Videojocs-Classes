@@ -129,6 +129,7 @@
     <ClInclude Include="Gui.h">
       <Filter>Desenvolupament  ========\Modules\Gui</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Programacio 2 ===========">
@@ -152,5 +153,13 @@
     <Filter Include="Desenvolupament  ========\Modules\Gui">
       <UniqueIdentifier>{7331cf5b-9074-48c0-8f4f-0f128f6df98d}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Development - Class 14.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
+    <Image Include="C:\Users\jcasa\Desktop\Projects\Folder icons\diablo2_256x256.png" />
+    <Image Include="..\Game\diablo2.ico" />
   </ItemGroup>
 </Project>
