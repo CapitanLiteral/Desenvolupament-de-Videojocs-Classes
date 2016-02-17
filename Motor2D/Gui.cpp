@@ -363,12 +363,17 @@ void GuiInputText::Update(const Gui* mouse_hover, const Gui* focus)
 			{
 				cursor_coords.x = 0;
 			}
+			if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+			{
+				listener->OnGui(this, GuiEvents::return_down);
+			}
 		}
 
 		if (selection != 0 && listener != nullptr)
 		{
 			listener->OnGui(this, GuiEvents::input_submit);
 		}
+
 	}
 }
 
@@ -392,7 +397,13 @@ void GuiInputText::Draw() const
 		App->render->DrawQuad({ pos.x + (cursor_coords.x - (CURSOR_WIDTH / 2)), pos.y, CURSOR_WIDTH, cursor_coords.y }, 255, 255, 255, 255, true, false);
 	}
 }
+// ---------------------------
+const char* GuiInputText::GetString() const
+{
+	return input.GetString();
+}
 
+// ---------------------------
 GuiLoadBar::GuiLoadBar(int value, const SDL_Texture* texture, const rectangle& bar_sect, const rectangle& cover_sect, bool show_text) :
 value(value), bar(texture, bar_sect), cover(texture, cover_sect), show_text(show_text),bar_section(bar_sect)
 {

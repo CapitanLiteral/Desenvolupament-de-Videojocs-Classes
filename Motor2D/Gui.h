@@ -18,7 +18,8 @@ enum GuiEvents
 	lost_focus,
 	input_changed,
 	input_submit,
-	value_changed
+	value_changed,
+	return_down
 };
 
 enum GuiTypes
@@ -127,6 +128,7 @@ public:
 
 	void Update(const Gui* mouse_hover, const Gui* focus);
 	void Draw() const;
+	const char* GetString()const;
 
 private:
 
