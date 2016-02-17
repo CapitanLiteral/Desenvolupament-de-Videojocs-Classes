@@ -126,8 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Game\diablo2.ico" />
-    <Image Include="C:\Users\jcasa\Desktop\Projects\Folder icons\diablo2_256x256.png" />
-    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

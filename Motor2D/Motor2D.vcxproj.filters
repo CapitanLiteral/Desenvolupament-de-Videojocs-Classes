@@ -158,8 +158,6 @@
     <ResourceCompile Include="Development - Class 14.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico" />
-    <Image Include="C:\Users\jcasa\Desktop\Projects\Folder icons\diablo2_256x256.png" />
     <Image Include="..\Game\diablo2.ico" />
   </ItemGroup>
 </Project>
