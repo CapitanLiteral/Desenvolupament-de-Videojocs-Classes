@@ -339,3 +339,14 @@ bool j1Gui::Load(pugi::xml_node& config)
 
 	return true;
 }
+
+bool j1Gui::Focus(Gui* gui)
+{
+	bool ret = false;
+	if (gui)
+	{
+		focus = gui;
+		ret = true;
+	}
+	return ret;
+}

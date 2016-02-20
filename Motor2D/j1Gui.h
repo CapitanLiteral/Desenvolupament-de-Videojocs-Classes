@@ -61,6 +61,8 @@ public:
 	bool Save(pugi::xml_node&)const;
 	bool Load(pugi::xml_node&);
 
+	bool Focus(Gui* gui);
+
 private:
 
 	bool debug = false;

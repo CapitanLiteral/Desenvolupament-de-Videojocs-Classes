@@ -363,10 +363,12 @@ void GuiInputText::Update(const Gui* mouse_hover, const Gui* focus)
 			{
 				cursor_coords.x = 0;
 			}
-			if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
-			{
+		//
+		}
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+		{
+			if (listener)
 				listener->OnGui(this, GuiEvents::return_down);
-			}
 		}
 
 		if (selection != 0 && listener != nullptr)
@@ -375,6 +377,13 @@ void GuiInputText::Update(const Gui* mouse_hover, const Gui* focus)
 		}
 
 	}
+}
+
+void GuiInputText::Clear()
+{
+	input.Clear();
+	text.SetText(input.GetString());
+	//TODO FIX doesnt clean the console text 
 }
 
 // --------------------------

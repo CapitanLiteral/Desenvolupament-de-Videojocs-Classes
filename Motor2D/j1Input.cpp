@@ -161,7 +161,7 @@ bool j1Input::PreUpdate()
 		case SDL_TEXTINPUT:
 			last_text_input.Insert(cursor_text_input, event.text.text);
 			cursor_text_input += strlen(event.text.text);
-			LOG("Input event: %s", event.edit.text);
+			//LOG("Input event: %s", event.edit.text);
 			break;
 
 			// TODO
@@ -169,7 +169,7 @@ bool j1Input::PreUpdate()
 			//last_text_input = event.edit.text;
 			//cursor_text_input = event.edit.start;
 			//selection_text_input = event.edit.length;
-			LOG("Edit event: %s cursor %d selection %d", event.edit.text, event.edit.start, event.edit.length);
+			//LOG("Edit event: %s cursor %d selection %d", event.edit.text, event.edit.start, event.edit.length);
 			break;
 
 		case SDL_MOUSEBUTTONDOWN:

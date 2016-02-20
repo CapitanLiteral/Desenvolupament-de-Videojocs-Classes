@@ -38,10 +38,10 @@ public:
 class CVar
 {
 public:
-	CVar(const char*  name, float* ref, bool serialize = false);
-	CVar(const char*  name, int* ref, bool serialize = false);
-	CVar(const char*  name, char* ref, bool serialize = false);
-	CVar(const char*  name, bool* ref, bool serialize = false);
+	CVar(const char*  name, float* ref, bool serialize);
+	CVar(const char*  name, int* ref, bool serialize);
+	CVar(const char*  name, char* ref, bool serialize);
+	CVar(const char*  name, bool* ref, bool serialize);
 
 public:
 	bool Serialize;
@@ -131,6 +131,8 @@ public:
 
 	void GetInput(const char* src);
 
+	void Output(char* str);
+
 	void Open();
 	void Close();
 	void Clear();
@@ -148,7 +150,7 @@ private:
 	void CutString(const char* str, p2DynArray<p2SString>* dst);
 	Command* FindCommand(const char* str, uint nArgs)const;
 	CVar* FindCVar(const char* str);
-	void SetCVar(const char* calue);
+	void SetCVar(const char* value);
 
 private:
 	p2List<Command*> commandList;
@@ -167,6 +169,22 @@ private:
 	int OutputHeight = 0;
 
 	bool CloseGame = false;
+
+
+
+	struct C_Quit : public Command
+	{
+		C_Quit() : Command("quit", "Quit the game.", 0, "Console"){}
+		void Function(const p2DynArray<p2SString>* arg);
+	}c_Quit;
+
+	struct C_Close : public Command
+	{
+		C_Close() : Command("close", "Close console.", 0, "Console"){}
+		void Function(const p2DynArray<p2SString>* arg);
+	}c_Close;
+
+
 };
 
 #endif // __j1CONSOLE_H__

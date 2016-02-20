@@ -129,6 +129,7 @@ public:
 	void Update(const Gui* mouse_hover, const Gui* focus);
 	void Draw() const;
 	const char* GetString()const;
+	void Clear();
 
 private:
 

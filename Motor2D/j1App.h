@@ -57,6 +57,8 @@ public:
 	void SaveGame(const char* file) const;
 	void GetSaveGames(p2List<p2SString>& list_to_fill) const;
 
+	bool IsInit();
+
 private:
 
 	// Load config file
@@ -110,6 +112,8 @@ private:
 	bool				want_to_load = false;
 	p2SString			load_game;
 	mutable p2SString	save_game;
+
+	bool				init = false;
 
 	j1PerfTimer			ptimer;
 	uint64				frame_count = 0;

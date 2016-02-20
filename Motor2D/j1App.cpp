@@ -142,6 +142,8 @@ bool j1App::Start()
 
 	PERF_PEEK(ptimer);
 
+	init = ret;
+
 	return ret;
 }
 
@@ -164,6 +166,10 @@ bool j1App::Update()
 		ret = PostUpdate();
 
 	FinishUpdate();
+
+	if (ret == false)
+		init = ret;
+
 	return ret;
 }
 
@@ -453,4 +459,9 @@ bool j1App::SavegameNow() const
 	data.reset();
 	want_to_save = false;
 	return ret;
+}
+
+bool j1App::IsInit()
+{
+	return init;
 }
