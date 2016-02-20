@@ -12,8 +12,10 @@ class GuiLoadBar;
 class GuiHSlider;
 class GuiVSlider;
 class GuiMCursor;
+class GuiRect;
 
 struct SDL_Texture;
+struct SDL_Color;
 
 // ---------------------------------------------------
 class j1Gui : public j1Module
@@ -50,6 +52,7 @@ public:
 	GuiVSlider* CreateVSlider(const rectangle& bar, const rectangle& thumb, const rectangle& bar_offset, const iPoint& thumb_margins, float value);
 	GuiMCursor* CreateGuiMCursor(const char* filename, int margin_x, int margin_y);
 	GuiMCursor* CreateGuiMCursor(const char* filename, const rectangle& section, int margin_x, int margin_y);
+	GuiRect* CreateGuiRect(const rectangle& _rect, SDL_Color _color);
 	
 	bool DeleteGuiElement(Gui* elem);
 	void DisableGuiElement(Gui* elem);

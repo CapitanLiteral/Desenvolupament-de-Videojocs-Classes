@@ -53,6 +53,9 @@ void j1Map::Draw()
 					SDL_Rect r = tileset->GetTileRect(tile_id);
 					iPoint pos = MapToWorld(x, y);
 
+					if (data.type == MAPTYPE_ISOMETRIC)
+						pos -= iPoint{ 32, 37 };
+
 					App->render->Blit(tileset->texture, pos.x, pos.y, &r);
 				}
 			}
@@ -127,7 +130,9 @@ iPoint j1Map::WorldToMap(int x, int y) const
 	}
 	else if(data.type == MAPTYPE_ISOMETRIC)
 	{
-		
+		x += 32;
+		y += 37;
+
 		float half_width = data.tile_width * 0.5f;
 		float half_height = data.tile_height * 0.5f;
 		ret.x = int( (x / half_width + y / half_height) / 2) - 1;

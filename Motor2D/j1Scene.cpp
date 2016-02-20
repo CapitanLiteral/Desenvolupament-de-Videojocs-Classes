@@ -47,6 +47,8 @@ bool j1Scene::Start()
 	}
 
 	debug_tex = App->tex->Load("maps/path2.png");
+
+	
 	window = App->gui->CreateImage({0, 512, 483, 512});
 	window->Center();
 	window->draggable = true;
@@ -113,7 +115,7 @@ bool j1Scene::Start()
 	help->SetParent(image);
 	help->active = false;
 
-	curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, 10, 0);
+	curs = App->gui->CreateGuiMCursor("wcursor.png", rectangle{ 0, 1, 46, 48 }, -15, -30);
 	//curs = App->gui->CreateGuiMCursor("d2cursor.png", 0, 0);
 	curs->SetListener(this);
 

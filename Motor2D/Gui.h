@@ -32,7 +32,8 @@ enum GuiTypes
 	load_bar,
 	h_slider,
 	v_slider,
-	mouse_cursor
+	mouse_cursor,
+	gui_rect
 };
 
 // ---------------------------------------------------
@@ -117,8 +118,6 @@ private:
 };
 
 // ---------------------------------------------------
-// TODO 1: Create a new InputText UI element with it's own label and image
-// and draw it
 class GuiInputText : public Gui
 {
 public:
@@ -145,6 +144,7 @@ private:
 	bool show_def_text;
 };
 
+// ---------------------------------------------------
 class GuiLoadBar : public Gui
 {
 public:
@@ -169,6 +169,7 @@ private:
 	bool show_text;
 };
 
+// ---------------------------------------------------
 class GuiHSlider : public Gui
 {
 public:
@@ -191,6 +192,7 @@ private:
 	float slider_value = 0;
 };
 
+// ---------------------------------------------------
 class GuiVSlider : public Gui
 {
 public:
@@ -213,7 +215,7 @@ private:
 	float slider_value = 0;
 };
 
-
+// ---------------------------------------------------
 class GuiMCursor : public Gui
 {
 public:
@@ -232,5 +234,27 @@ private:
 	const SDL_Texture* curs = nullptr;
 	iPoint margin;
 };
+
+// ---------------------------------------------------
+class GuiRect : public Gui
+{
+public:
+	GuiRect(const rectangle& _rect, SDL_Color _color);
+	~GuiRect();
+
+	void SetRectSize(const rectangle& rect);
+	void SetRectColor(SDL_Color color);
+
+	void Draw()const;
+
+private:
+	rectangle Rect;
+	SDL_Color Color;
+};
+
+
+
+
+
 
 #endif // __GUI_H__

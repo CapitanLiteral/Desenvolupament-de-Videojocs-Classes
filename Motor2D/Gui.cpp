@@ -716,6 +716,7 @@ const SDL_Texture* GuiMCursor::GetTexture()const
 	return curs;
 }
 
+//----------------------------
 
 void GuiMCursor::Update(const Gui* mouse_hover, const Gui* focus)
 {
@@ -733,4 +734,30 @@ void GuiMCursor::Update(const Gui* mouse_hover, const Gui* focus)
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == j1KeyState::KEY_UP)
 			listener->OnGui(this, GuiEvents::mouse_lclick_up);
 	}
+}
+
+// Class GuiRect ----------------------------
+GuiRect::GuiRect(const rectangle& _rect, SDL_Color _color) : Gui(), Rect(_rect), Color(_color)
+{
+	type = gui_rect;
+	SetLocalPos(Rect.x, Rect.y);
+	SetSize(Rect.w, Rect.h);
+}
+
+GuiRect::~GuiRect()
+{}
+
+void GuiRect::SetRectSize(const rectangle& _rect)
+{
+	Rect = _rect;
+}
+
+void GuiRect::SetRectColor(SDL_Color _color)
+{
+	Color = _color;
+}
+
+void GuiRect::Draw()const
+{
+	App->render->DrawQuad({ Rect.x, Rect.y, Rect.w, Rect.h }, Color.r, Color.g, Color.b, Color.a);
 }

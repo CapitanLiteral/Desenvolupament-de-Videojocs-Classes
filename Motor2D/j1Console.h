@@ -8,6 +8,8 @@
 class GuiInputText;
 class GuiLabel;
 
+#define LINE_SPACE 10
+
 enum CVarTypes
 {
 	cv_float,
@@ -158,6 +160,8 @@ private:
 	p2DynArray<p2SString> tags;
 
 	//UI
+	Gui* BigRectangle;
+	Gui* SmallRectangle;
 	GuiInputText* InputText = NULL;
 
 	p2DynArray<GuiLabel*> output;

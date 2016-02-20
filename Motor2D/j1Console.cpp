@@ -1,6 +1,8 @@
 #include "p2Defs.h"
 #include "p2Log.h"
 
+#include "j1App.h"
+#include "j1Window.h"
 #include "j1FileSystem.h"
 #include "j1Console.h"
 #include "j1Render.h"
@@ -39,8 +41,14 @@ bool j1Console::Start()
 {
 	bool ret = true;
 
-	InputText = App->gui->CreateInput({ 4, 351, 796, 43 }, "", 315, {0, 0}, false, 70);
-	InputText->SetLocalPos(0, 300);
+	uint wX, wY;
+	App->win->GetWindowSize(wX, wY);
+	BigRectangle = App->gui->CreateGuiRect({ 0, 0, wX, 200 }, { 74, 74, 74, 100 });
+	BigRectangle->active = false;
+	SmallRectangle = App->gui->CreateGuiRect({ 0, 200, wX, 43 }, { 108, 123, 139, 100 });
+	SmallRectangle->active = false;
+	InputText = App->gui->CreateInput({ 0, 1024, wX, 43 }, "", 315, { 0, 0 }, false, 70);
+	InputText->SetLocalPos(0, 200);
 	InputText->interactive = true;
 	InputText->can_focus = true;
 	InputText->SetListener(this);
@@ -205,12 +213,15 @@ void j1Console::Output(char* str)
 {
 	GuiLabel* out = App->gui->CreateLabel(str);
 	//Set the labbel position according to the scroll
+
 	output.PushBack(out);
 }
 
 void j1Console::Open()
 {
 	InputText->active = true;
+	BigRectangle->active = true;
+	SmallRectangle->active = true;
 	Active = true;
 	App->gui->Focus(InputText);
 }
@@ -218,13 +229,15 @@ void j1Console::Open()
 void j1Console::Close()
 {
 	InputText->active = false;
+	BigRectangle->active = false;
+	SmallRectangle->active = false;
 	Active = false;
 	InputText->Clear();
 }
 
 void j1Console::Clear()
 {
-
+	output.Clear();
 }
 
 void j1Console::DisplayCommands(p2SString str)const

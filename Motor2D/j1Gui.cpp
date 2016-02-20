@@ -250,6 +250,17 @@ GuiMCursor* j1Gui::CreateGuiMCursor(const char* filename, const rectangle& secti
 	return ret;
 }
 
+GuiRect* j1Gui::CreateGuiRect(const rectangle& _rect, SDL_Color _color)
+{
+	GuiRect* ret = NULL;
+
+	ret = new GuiRect(_rect, _color);
+
+	elements.add(ret);
+
+	return ret;
+}
+
 // const getter for atlas
 const SDL_Texture* j1Gui::GetAtlas() const
 {
