@@ -65,8 +65,8 @@ struct PathNode
 {
 	// Convenient constructors
 	PathNode();
-	PathNode(int g, int h, const iPoint& pos, const PathNode* parent);
-	PathNode(const PathNode& node);
+	PathNode(int g, int h, const iPoint& pos, const PathNode* parent, int _additionalCost = 0);
+	PathNode(const PathNode& nodeint);
 
 	// Fills a list (PathList) of all valid adjacent pathnodes
 	uint FindWalkableAdjacents(PathList& list_to_fill) const;
@@ -78,6 +78,7 @@ struct PathNode
 	// -----------
 	int g;
 	int h;
+	int additionalCost;
 	iPoint pos;
 	const PathNode* parent; // needed to reconstruct the path in the end
 };
